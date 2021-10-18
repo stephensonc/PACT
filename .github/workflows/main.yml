@@ -1,0 +1,35 @@
+name: Release Senior Thesis
+on:
+  push:
+    tags:
+      - '*.*.*'    
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dependencies
+        run: sudo apt-get -qq update && sudo apt-get install -y --no-install-recommends latexmk texlive-fonts-extra texlive-fonts-recommended texlive-latex-base texlive-latex-extra texlive-latex-recommended
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Compile LaTeX
+        run: mkdir _build && latexmk -pdf -outdir=_build SeniorThesis.tex
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} 
+          asset_path: _build/SeniorThesis.pdf
+          asset_name: SeniorThesis.pdf
+          asset_content_type: pdf
