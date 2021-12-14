@@ -2,11 +2,11 @@
 \label{ch:intro}
 
 % This is the introduction. It should describe your completed senior thesis work, including the overall aims and the background motivating your research. Whenever possible, you should use one or more concrete examples
-% and technical diagrams. 
+% and technical diagrams.
 
-% It is often useful and necessary to separate the introduction into multiple section. Several possible sections are proposed below, you can use these or distribute your introductory text into sections in another way. 
+% It is often useful and necessary to separate the introduction into multiple section. Several possible sections are proposed below, you can use these or distribute your introductory text into sections in another way.
 
-\section{Motivation} 
+\section{Motivation}
 \label{sec:motivation}
 
 % This section should include a statement of the problem, the overall aims, and the background motivating your research. Whenever possible, you should use one or more concrete examples
@@ -38,7 +38,7 @@ This system provides the user with information about which algorithm is best sui
 \par
 By using this system, choosing the most battery-efficient pathfinding algorithm for the expected environment or the robot becomes easier, and enhances the operation time of autonomous robots in critical roles like search and rescue operations or bomb disposal. After this project, the simulation program will be able to be expanded for use with different pathfinding algorithms beyond those used in this project, and also with more complex sets of parameters and evaluation metrics for each algorithm.
 \par
-In addition to the simulation system, a modified version of the A* algorithm has been created that takes battery life into account as a weighting factor when determining the shortest path. Using the analysis of the other algorithms based on energy consumption, this new algorithm chooses a more energy efficient path than that of the other algorithms that do not inherently assess the energy cost of a given path. 
+In addition to the simulation system, a modified version of the A* algorithm has been created that takes battery life into account as a weighting factor when determining the shortest path. Using the analysis of the other algorithms based on energy consumption, this new algorithm chooses a more energy efficient path than that of the other algorithms that do not inherently assess the energy cost of a given path.
 
 \section{Overview of Methods}
 This project has created a "simulation room" of sorts in which a user is able to enter a pathfinding algorithm mathematically as a function, and compare it to other added robot pathfinding algorithms. This comparison is based on a variety of factors, such as the battery cost of the chosen route, the time it took to calculate the chosen route, and the amount of memory that was used during the calculation. The general process of using the simulation tool is outlined in Figure \ref{fig:Usage}.
@@ -115,13 +115,12 @@ The pseudocode for the new algorithm is outlined in Algorithm \ref{alg:ModifiedA
             \EndFor
         \EndWhile
     \end{algorithmic}
-
 \end{algorithm}
 
 \section{Evaluation Strategy}
 \label{sec:evaluate}
 
-In this research, the primary means of evaluating each algorithm will be through the metrics of the amount of time it takes to calculate the most efficient path, the amount of memory on the device the algorithms use, and the amount of battery that traversing the chosen path will consume. Each algorithm is tested with a few different environments and robot weights, in an attempt to get the most full picture of the scenarios in which the algorithm functions the best. The processing steps are taking the inputs and feeding them into two different pathfinding algorithms in such a way that they obtain the same environment and robot data, so that the chosen path by each algorithm can be analyzed and compared based on total expected energy cost of the paths. During the execution of the algorithms, there are a few other metrics I capture such as the highest amount of RAM the algorithm uses, as well as the amount of time it takes for the algorithm to produce a valid result. 
+In this research, the primary means of evaluating each algorithm will be through the metrics of the amount of time it takes to calculate the most efficient path, the amount of memory on the device the algorithms use, and the amount of battery that traversing the chosen path will consume. Each algorithm is tested with a few different environments and robot weights, in an attempt to get the most full picture of the scenarios in which the algorithm functions the best. The processing steps are taking the inputs and feeding them into two different pathfinding algorithms in such a way that they obtain the same environment and robot data, so that the chosen path by each algorithm can be analyzed and compared based on total expected energy cost of the paths. During the execution of the algorithms, there are a few other metrics I capture such as the highest amount of RAM the algorithm uses, as well as the amount of time it takes for the algorithm to produce a valid result.
 \par
 Automated software testing will be used to verify the accuracy of the calculations/features of the project. The Pytest \cite{pytest_2021} library will be used to run an automated test suite on the code developed in this project, making it easier to verify that the process by which the results are obtained is correct.
 \par
