@@ -1,10 +1,10 @@
 \chapter{Introduction}
 \label{ch:intro}
 
-This is the introduction. It should describe your completed senior thesis work, including the overall aims and the background motivating your research. Whenever possible, you should use one or more concrete examples
-and technical diagrams. 
+% This is the introduction. It should describe your completed senior thesis work, including the overall aims and the background motivating your research. Whenever possible, you should use one or more concrete examples
+% and technical diagrams. 
 
-It is often useful and necessary to separate the introduction into multiple section. Several possible sections are proposed below, you can use these or distribute your introductory text into sections in another way. 
+% It is often useful and necessary to separate the introduction into multiple section. Several possible sections are proposed below, you can use these or distribute your introductory text into sections in another way. 
 
 \section{Motivation} 
 \label{sec:motivation}
@@ -36,7 +36,7 @@ By using this system, choosing the most battery-efficient pathfinding algorithm 
 \par
 In addition to the simulation system, a modified version of the A* algorithm has been created that takes battery life into account as a weighting factor when determining the shortest path. Using the analysis of the other algorithms based on energy consumption, this new algorithm chooses a more energy efficient path than that of the other algorithms that do not inherently assess the energy cost of a given path. 
 
-\section{Method of Approach}
+\section{Overview of Methods}
 This project has created a "simulation room" of sorts in which a user is able to enter a pathfinding algorithm mathematically as a function, and compare it to other added robot pathfinding algorithms. This comparison is based on a variety of factors, such as the battery cost of the chosen route, the time it took to calculate the chosen route, and the amount of memory that was used during the calculation. The general process of using the simulation tool is outlined in Figure \ref{fig:Usage}.
 \begin{figure}[H]
     \centering
@@ -44,18 +44,6 @@ This project has created a "simulation room" of sorts in which a user is able to
     \caption{The process for using the simulation tool}
     \label{fig:Usage}
 \end{figure}
-\par
-Henkel et al.'s algorithm factors in energy cost when considering routes to take\cite{henkel2016energy}, meaning that a similar approach can be used for calculating the energy required for other pathfinding algorithms. By analyzing the Electrical Energy, Frictional Energy, and Acceleration energy of the robot, it is possible to get an accurate projection by taking all of their sums. the Electrical Energy is calculated by taking the Voltage(U), the Current(I), and the time(t), and multiplying them together in this equation:\begin{equation}
-    E_{et} = U\times I\times t
-\end{equation}
-Similarly, the Frictional Energy can be obtained by multiplying the velocity(v), the frictional coefficient(C), and the distance traveled(s):\begin{equation}
-    E_{fric} = v \times C \times s
-\end{equation}
-And finally the Acceleration Energy can be calculated by multiplying the mass of the robot(m) with the acceleration(a) and the distance it travels(s):\begin{equation}
-    E_{acc} = a \times m \times s
-\end{equation}
-These equations\cite{henkel2016energy} should be general enough to be applied to any robot and any pathfinding algorithm in order to get the energy required for a given path/trajectory.
-\par
 Each algorithm is able to be assessed based on the amount of time it takes to run the algorithm, how much memory it consumed, and how much battery power the calculated route will take to execute. Each of these metrics will be able to be used by robot designers to determine which algorithm best suits their needs for the robot that they are designing.
 \par
 This project has been written in Python due to the large number of available libraries and the general ease of use of the language. Numpy \cite{numpy_2021} has been used in the implementations of the various pathfinding algorithms, and the integrated system libraries were useful for tracking metrics such as the time it took to execute the algorithms and how much memory they use.
@@ -137,5 +125,5 @@ Each metric used in comparing these pathfinding algorithms is used with simple a
 \par
 The metric that is prioritized in this evaluation is the battery power cost of the route chosen by the algorithms. When choosing a pathfinding algorithm for autonomous field robots, depending on the task the robot is expected to perform, operational time can often be the limiting factor for them completing their task. By prioritizing minimization of battery costs, and weighing in the expected amount of time for the robot to traverse the path, it is possible to determine which algorithm will maximize the operational time of an autonomous robot.
 
-\section{Thesis Outline}
-\label{sec:outline}
+% \section{Thesis Outline}
+% \label{sec:outline}
