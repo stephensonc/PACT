@@ -3,6 +3,7 @@
 *.class
 *.o
 *.so
+__pycache__/
 
 # Android #
 ############
