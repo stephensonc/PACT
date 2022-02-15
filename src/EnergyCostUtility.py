@@ -1,6 +1,6 @@
 from cmath import sqrt
 import math
-from EnvironmentData import EnvironmentNode
+from src.EnvironmentData import EnvironmentNode
 
 
 def calculate_energy_cost(horizondal_dist, vertical_dist, robot_data_obj):
