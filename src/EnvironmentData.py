@@ -1,5 +1,7 @@
 import math
 
+from src.RobotData import RobotData
+
 
 class EnvironmentNode:
 
@@ -24,10 +26,17 @@ class EnvironmentNode:
         self.adjacent_edges = []
         self.passable = passable
         self.friction_coefficient = friction_coeff
+
+        # Robot Data
+        self.robot_data_obj = None
         
         
     def add_adjacent_edge(self, distance: float, node):
         self.adjacent_edges.append((distance, node))
+
+
+    def set_robot_data(self, robot_data_obj: RobotData):
+        self.robot_data_obj = robot_data_obj
 
 
     # Override this to change how the edge cost is generated

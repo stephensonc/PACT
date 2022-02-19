@@ -27,7 +27,9 @@ def test_pop_node():
         node_to_remove
         ]
 
-    open_list = DefaultAStar.pop_node_from_list(open_list, node_to_remove)
+    alg = DefaultAStar()
+
+    open_list = alg.pop_node_from_list(open_list, node_to_remove)
     assert len(open_list) == 1
     assert open_list[0].elevation == 18.0
 
@@ -66,7 +68,9 @@ def test_start_pathing():
     start_cell = (0,1)
     end_cell = (2, 1)
 
-    open_list, closed_list, current_node, path = DefaultAStar.start_pathing(nodes, [], nodes[0], nodes[1])
+    alg = DefaultAStar()
+
+    open_list, closed_list, current_node, path = alg.start_pathing(nodes, [], nodes[0], nodes[1])
     
     assert open_list is not None
     assert closed_list is not None

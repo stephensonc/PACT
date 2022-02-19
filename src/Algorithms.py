@@ -5,6 +5,10 @@ from src.EnergyCostUtility import calculate_energy_cost
 
 class Algorithm:
 
+
+    def __init__(self, robot_data_obj: RobotData = None) -> None:
+        self.robot_data_obj = robot_data_obj
+
     # Must return an array of tuples containing path coords
     def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[tuple(int, int)]":
         pass
@@ -13,7 +17,7 @@ class Algorithm:
 class DefaultAStar(Algorithm):
 
     def __init__(self, robot_data_obj = None) -> None:
-        self.robot_data = robot_data_obj
+        super().__init__(robot_data_obj)
 
     class AStarEnvironmentNode(EnvironmentNode):
         def __init__(self, node: EnvironmentNode) -> None:
@@ -22,6 +26,8 @@ class DefaultAStar(Algorithm):
             super().__init__(node.x_coord, node.y_coord, node.elevation, node.passable)
             # print(len(node.adjacent_edges))
             self.adjacent_edges = [(edge[0], edge[1]) for edge in node.adjacent_edges]
+            self.robot_data_obj = node.robot_data_obj
+
 
             # New, AStar-specific node data
             self.previous_node = None
@@ -50,13 +56,13 @@ class DefaultAStar(Algorithm):
 
 
         while len(open_list) > 0:
-            open_list, closed_list, current_node, output_path = DefaultAStar.start_pathing(open_list, closed_list, current_node, end_node)
+            open_list, closed_list, current_node, output_path = self.start_pathing(open_list, closed_list, current_node, end_node)
             if len(output_path) > 0:
                 break
 
         return output_path
 
-    def start_pathing(open_list: "list[AStarEnvironmentNode]", closed_list: "list[AStarEnvironmentNode]", current_node: AStarEnvironmentNode, end_node: AStarEnvironmentNode):
+    def start_pathing(self, open_list: "list[AStarEnvironmentNode]", closed_list: "list[AStarEnvironmentNode]", current_node: AStarEnvironmentNode, end_node: AStarEnvironmentNode):
             
         best_node_index = 0
         for i in range(len(open_list)):
@@ -80,7 +86,7 @@ class DefaultAStar(Algorithm):
                 temp = temp.previous_node
             # Probably could return here
 
-        open_list = DefaultAStar.pop_node_from_list(open_list, current_node)
+        open_list = self.pop_node_from_list(open_list, current_node)
         closed_list.append(current_node) # TODO: Verify that current_node is an AStarEnvironmentNode
         
 
@@ -105,7 +111,7 @@ class DefaultAStar(Algorithm):
                     if adjacent_node.x_coord == open_list[j].x_coord and adjacent_node.y_coord == open_list[j].y_coord:
                         if temp_cost_to_adjacent_node < open_list[j].cost_from_start:
                             open_list[j].cost_from_start = temp_cost_to_adjacent_node
-                            open_list[j].heuristic_value = DefaultAStar.get_h_value(open_list[j].coord_tuple, end_node.coord_tuple)
+                            open_list[j].heuristic_value = self.get_h_value(open_list[j], end_node)
                             open_list[j].cost_to_end = open_list[j].cost_from_start + open_list[j].heuristic_value
                             open_list[j].previous_node = current_node
                             # print("Node coordinates: " + open_list[j].coord_tuple)
@@ -113,37 +119,43 @@ class DefaultAStar(Algorithm):
 
                 if not already_updated_node:
                     adjacent_node.cost_from_start = temp_cost_to_adjacent_node
-                    adjacent_node.heuristic_value = DefaultAStar.get_h_value(adjacent_node.coord_tuple, end_node.coord_tuple)
+                    adjacent_node.heuristic_value = self.get_h_value(adjacent_node, end_node)
                     adjacent_node.cost_to_end = adjacent_node.cost_from_start + adjacent_node.heuristic_value
                     adjacent_node.previous_node = current_node
                     open_list.append(adjacent_node)
 
         return open_list, closed_list, current_node, output_path
 
-    def pop_node_from_list(open_list: "list[DefaultAStar.AStarEnvironmentNode]", current_node: AStarEnvironmentNode):
+    def pop_node_from_list(self, open_list: "list[DefaultAStar.AStarEnvironmentNode]", current_node: AStarEnvironmentNode):
         for i in range(len(open_list)):
             if open_list[i] == current_node:
                 open_list.pop(i)
                 break
         return open_list
 
-    def get_h_value(node_coords: tuple, dest_cell_coords: tuple) -> int:
-        return dist(node_coords, dest_cell_coords) 
+    def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
+        return dist(start_node.coord_tuple, dest_node.coord_tuple) 
 
 
 class EnergyCostAStar(DefaultAStar):
+
+    def __init__(self, robot_data_obj: RobotData = None) -> None:
+        super().__init__(robot_data_obj)
 
     class EnergyCostAStarEnvironmentNode(DefaultAStar.AStarEnvironmentNode):
 
         def __init__(self, node: EnvironmentNode) -> None:
             super().__init__(node)
         
-        def calculate_edge_cost(self, target_node) -> float:
-            return super().calculate_edge_cost(target_node)
+        def calculate_edge_cost(self, target_node: EnvironmentNode) -> float:
+            return calculate_energy_cost(self, target_node, self.robot_data_obj)
 
 
     def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[DefaultAStar.AStarEnvironmentNode]":
+        for row in env_grid.nodes:
+            for node in row:
+                node.set_robot_data(self.robot_data_obj)
         return super().run(env_grid, start_cell_coords, dest_cell_coords)
 
-    def get_h_value(self, node_coords: tuple, dest_cell_coords: tuple) -> int:
-        return calculate_energy_cost(self.robot_data)
+    def get_h_value(start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
+        return super().get_h_value(dest_node)
