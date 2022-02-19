@@ -1,6 +1,4 @@
 import math
-from turtle import left
-from xmlrpc.client import boolean
 
 
 class EnvironmentNode:
@@ -8,31 +6,31 @@ class EnvironmentNode:
 
     # Each node is 1 meter away from the next in line
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, elevation: float, passable: boolean = True):
+    def __init__(self, x_coordinate: int, y_coordinate: int, elevation: float, passable: bool = True):
         # Type annotations:
         self.x_coord: int
         self.y_coord: int
         self.coord_tuple: tuple
         self.elevation: float
-        self.adjacent_nodes: list[EnvironmentNode]
-        self.passable: boolean
+        self.adjacent_edges: list[tuple(float, EnvironmentNode)]
+        self.passable: bool
 
         # Instance variable initialization
         self.x_coord = x_coordinate
         self.y_coord = y_coordinate
         self.coord_tuple = (self.x_coord, self.y_coord)
         self.elevation = elevation
-        self.adjacent_nodes = []
+        self.adjacent_edges = []
         self.passable = passable
         
         
 
     
-    def add_adjacent_node(self, distance: float, node):
-        self.adjacent_nodes.append((distance, node))
+    def add_adjacent_edge(self, distance: float, node):
+        self.adjacent_edges.append((distance, node))
 
     def get_adjacent_nodes(self, graph_nodes):
-
+        self.adjacent_edges = []
         x = self.x_coord
         y = self.y_coord
 
@@ -83,7 +81,7 @@ class EnvironmentNode:
         for node in adj_nodes:
             if node is not None and node.passable:
                 dist = distance_between_nodes(self, node)
-                self.add_adjacent_node(dist, node)
+                self.add_adjacent_edge(dist, node)
 
 
     def print(self):

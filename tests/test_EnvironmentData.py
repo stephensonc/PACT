@@ -21,7 +21,7 @@ def test_add_node():
     graph.add_node(node2)
     assert graph.nodes[1][0] == node2
 
-def test_get_adjacent_nodes():
+def test_get_adjacent_edges():
     graph = EnvironmentGraph(2, 2)
     
     nodes = [
@@ -36,8 +36,8 @@ def test_get_adjacent_nodes():
     graph.update_adjacent_nodes()
 
     assert graph.nodes[0][0] == nodes[0]
-    assert len(graph.nodes[0][0].adjacent_nodes) == 3
+    assert len(graph.nodes[0][0].adjacent_edges) == 3
 
-    assert len(graph.nodes[1][1].adjacent_nodes) == 3
+    assert len(graph.nodes[1][1].adjacent_edges) == 3
     
 

@@ -32,6 +32,14 @@ def test_pop_node():
     assert open_list[0].elevation == 18.0
 
 
+def test_AStarEnvironmentNode():
+    node = EnvironmentNode(0,0,30.12)
+    astar_node = DefaultAStar.AStarEnvironmentNode(node)
+
+    assert astar_node.x_coord == node.x_coord
+    assert astar_node.y_coord == node.y_coord
+    
+    assert len(astar_node.adjacent_edges) == len(node.adjacent_edges)
 
 def test_start_pathing():
     graph = EnvironmentGraph(3, 3)
@@ -48,6 +56,8 @@ def test_start_pathing():
         EnvironmentNode(2, 1, 6.7),
         EnvironmentNode(2, 2, 8.9)
     ]
+
+    nodes = [DefaultAStar.AStarEnvironmentNode(node) for node in nodes]
     for node in nodes:
         graph.add_node(node)
 
@@ -56,9 +66,13 @@ def test_start_pathing():
     start_cell = (0,1)
     end_cell = (2, 1)
 
-    path = DefaultAStar.run(graph, start_cell, end_cell)
-    assert path is not None
-    assert len(path) > 0
+    open_list, closed_list, current_node, path = DefaultAStar.start_pathing(nodes, [], nodes[0], nodes[1])
+    
+    assert open_list is not None
+    assert closed_list is not None
+    assert current_node is not None
+    assert current_node == nodes[1]
+    assert len(closed_list) == 1
 
 
     
