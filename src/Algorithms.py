@@ -1,15 +1,19 @@
 from math import dist
-from platform import node
-from EnvironmentData import EnvironmentGraph, EnvironmentNode
+from src.RobotData import RobotData
+from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
+from src.EnergyCostUtility import calculate_energy_cost
 
-class AlgorithmInterface:
+class Algorithm:
 
     # Must return an array of tuples containing path coords
-    def run(env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple):
+    def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[tuple(int, int)]":
         pass
 
 
-class DefaultAStar(AlgorithmInterface):
+class DefaultAStar(Algorithm):
+
+    def __init__(self, robot_data_obj = None) -> None:
+        self.robot_data = robot_data_obj
 
     class AStarEnvironmentNode(EnvironmentNode):
         def __init__(self, node: EnvironmentNode) -> None:
@@ -18,9 +22,6 @@ class DefaultAStar(AlgorithmInterface):
             super().__init__(node.x_coord, node.y_coord, node.elevation, node.passable)
             # print(len(node.adjacent_edges))
             self.adjacent_edges = [(edge[0], edge[1]) for edge in node.adjacent_edges]
-            
-            # for i in range(len(self.adjacent_nodes)):
-            #     self.adjacent_nodes[i] = DefaultAStar.AStarEnvironmentNode(node)
 
             # New, AStar-specific node data
             self.previous_node = None
@@ -33,7 +34,7 @@ class DefaultAStar(AlgorithmInterface):
 
 
 
-    def run(env_grid:EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[AStarEnvironmentNode]":
+    def run(self, env_grid:EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[AStarEnvironmentNode]":
         print("Running default AStar")
         open_list = []
         closed_list = []
@@ -82,10 +83,6 @@ class DefaultAStar(AlgorithmInterface):
         open_list = DefaultAStar.pop_node_from_list(open_list, current_node)
         closed_list.append(current_node) # TODO: Verify that current_node is an AStarEnvironmentNode
         
-        # print("Updating open list")
-
-        # if len(current_node.adjacent_edges) == 0:
-        #     print("No adjacent nodes")
 
         for adjacent_node_edge in current_node.adjacent_edges:
             # print("Getting adjacent node")
@@ -132,8 +129,21 @@ class DefaultAStar(AlgorithmInterface):
 
     def get_h_value(node_coords: tuple, dest_cell_coords: tuple) -> int:
         return dist(node_coords, dest_cell_coords) 
-        return abs(node_coords[0] - dest_cell_coords[0]) + abs(node_coords[1] - dest_cell_coords[1])
 
 
-    def return_path() -> None:
-        pass
+class EnergyCostAStar(DefaultAStar):
+
+    class EnergyCostAStarEnvironmentNode(DefaultAStar.AStarEnvironmentNode):
+
+        def __init__(self, node: EnvironmentNode) -> None:
+            super().__init__(node)
+        
+        def calculate_edge_cost(self, target_node) -> float:
+            return super().calculate_edge_cost(target_node)
+
+
+    def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[DefaultAStar.AStarEnvironmentNode]":
+        return super().run(env_grid, start_cell_coords, dest_cell_coords)
+
+    def get_h_value(self, node_coords: tuple, dest_cell_coords: tuple) -> int:
+        return calculate_energy_cost(self.robot_data)

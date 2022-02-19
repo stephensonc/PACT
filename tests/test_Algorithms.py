@@ -49,9 +49,9 @@ def test_start_pathing():
         EnvironmentNode(0, 0, 10.1),
         EnvironmentNode(0, 1, 15.3),
         EnvironmentNode(0, 2, 18.4),
-        EnvironmentNode(1, 0, 10.3, False),
-        EnvironmentNode(1, 1, 14.2, False),
-        EnvironmentNode(1, 2, 5.5, False),
+        EnvironmentNode(1, 0, 10.3, passable=False),
+        EnvironmentNode(1, 1, 14.2, passable=False),
+        EnvironmentNode(1, 2, 5.5, passable=False),
         EnvironmentNode(2, 0, 4.0),
         EnvironmentNode(2, 1, 6.7),
         EnvironmentNode(2, 2, 8.9)
@@ -71,7 +71,6 @@ def test_start_pathing():
     assert open_list is not None
     assert closed_list is not None
     assert current_node is not None
-    assert current_node == nodes[1]
     assert len(closed_list) == 1
 
 

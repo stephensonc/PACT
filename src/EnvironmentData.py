@@ -6,7 +6,7 @@ class EnvironmentNode:
 
     # Each node is 1 meter away from the next in line
 
-    def __init__(self, x_coordinate: int, y_coordinate: int, elevation: float, passable: bool = True):
+    def __init__(self, x_coordinate: int, y_coordinate: int, elevation: float, friction_coeff: float = 1.0, passable: bool = True):
         # Type annotations:
         self.x_coord: int
         self.y_coord: int
@@ -14,6 +14,7 @@ class EnvironmentNode:
         self.elevation: float
         self.adjacent_edges: list[tuple(float, EnvironmentNode)]
         self.passable: bool
+        self.friction_coefficient: float
 
         # Instance variable initialization
         self.x_coord = x_coordinate
@@ -22,12 +23,16 @@ class EnvironmentNode:
         self.elevation = elevation
         self.adjacent_edges = []
         self.passable = passable
+        self.friction_coefficient = friction_coeff
         
         
-
-    
     def add_adjacent_edge(self, distance: float, node):
         self.adjacent_edges.append((distance, node))
+
+
+    # Override this to change how the edge cost is generated
+    def calculate_edge_cost(self, target_node) -> float:
+        return distance_between_nodes(self, target_node)
 
     def get_adjacent_nodes(self, graph_nodes):
         self.adjacent_edges = []
@@ -47,6 +52,7 @@ class EnvironmentNode:
         bot_node = None
         bot_left = None
         bot_right = None
+
         # Top, left, right, bottom
         if x < num_cols - 1: 
             right_node = graph_nodes[x + 1][y]
@@ -80,7 +86,7 @@ class EnvironmentNode:
 
         for node in adj_nodes:
             if node is not None and node.passable:
-                dist = distance_between_nodes(self, node)
+                dist = self.calculate_edge_cost(node)
                 self.add_adjacent_edge(dist, node)
 
 
