@@ -1,4 +1,5 @@
 from math import dist
+from tracemalloc import start
 from src.RobotData import RobotData
 from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
 from src.EnergyCostUtility import calculate_energy_cost
@@ -7,7 +8,7 @@ class Algorithm:
 
 
     def __init__(self, robot_data_obj: RobotData = None) -> None:
-        self.robot_data_obj = robot_data_obj
+        self.robot_data_obj = RobotData() if robot_data_obj is None else robot_data_obj
 
     # Must return an array of tuples containing path coords
     def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[tuple(int, int)]":
@@ -25,7 +26,7 @@ class DefaultAStar(Algorithm):
             # Copy over original node data
             super().__init__(node.x_coord, node.y_coord, node.elevation, node.passable)
             # print(len(node.adjacent_edges))
-            self.adjacent_edges = [(edge[0], edge[1]) for edge in node.adjacent_edges]
+            self.adjacent_edges = node.adjacent_edges
             self.robot_data_obj = node.robot_data_obj
 
 
@@ -36,7 +37,7 @@ class DefaultAStar(Algorithm):
             self.heuristic_value = 0 # H value
 
             # update adjacent_edges type annotation
-            self.adjacent_edges: list[tuple(float, DefaultAStar.AStarEnvironmentNode)]
+            self.adjacent_edges: list[EnvironmentGraph.Edge]
 
 
 
@@ -92,14 +93,14 @@ class DefaultAStar(Algorithm):
 
         for adjacent_node_edge in current_node.adjacent_edges:
             # print("Getting adjacent node")
-            edge_cost = adjacent_node_edge[0]
+            edge_cost = adjacent_node_edge.cost
             edge_cost: float
 
-            adjacent_node = adjacent_node_edge[1]
+            adjacent_node = adjacent_node_edge.destination_node
             adjacent_node: DefaultAStar.AStarEnvironmentNode
             
             # print(f"Adjacent node at coords: {adjacent_node.x_coord}, {adjacent_node.y_coord}")
-            if adjacent_node in closed_list or not adjacent_node.passable:
+            if adjacent_node in closed_list or not adjacent_node_edge.passable:
                 # print("Adjacent node in closed list or non-passable")
                 continue
             else:
@@ -158,4 +159,4 @@ class EnergyCostAStar(DefaultAStar):
         return super().run(env_grid, start_cell_coords, dest_cell_coords)
 
     def get_h_value(start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
-        return super().get_h_value(dest_node)
+        return calculate_energy_cost(start_node, dest_node)

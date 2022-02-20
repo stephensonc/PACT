@@ -5,6 +5,25 @@ from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
 from src.AlgorithmComparisonTool import AlgorithmComparisonTool
 
 
+def test_set_robot_data():
+
+    comparison_tool = AlgorithmComparisonTool()
+    comparison_tool.set_robot_data("random_path/yeet")
+
+    assert comparison_tool.robot_data is None
+    
+    comparison_tool.set_robot_data("robot_data/robot_example.yml")
+    
+    robot_data_obj = comparison_tool.robot_data
+    assert robot_data_obj is not None
+    assert robot_data_obj.kg_weight == 30.5
+    assert robot_data_obj.friction_coefficient == 0.8
+    assert robot_data_obj.avg_movespeed == 7.3
+    assert robot_data_obj.max_movespeed == 10.0
+    assert robot_data_obj.max_passable_slope == 70.0
+
+
+
 def test_run_algorithm():
     comparison_tool = AlgorithmComparisonTool()
 

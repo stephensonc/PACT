@@ -1,5 +1,5 @@
 import math
-
+import numpy as np
 from src.RobotData import RobotData
 
 
@@ -14,7 +14,7 @@ class EnvironmentNode:
         self.y_coord: int
         self.coord_tuple: tuple
         self.elevation: float
-        self.adjacent_edges: list[tuple(float, EnvironmentNode)]
+        self.adjacent_edges: list[EnvironmentGraph.Edge]
         self.passable: bool
         self.friction_coefficient: float
 
@@ -32,7 +32,8 @@ class EnvironmentNode:
         
         
     def add_adjacent_edge(self, distance: float, node):
-        self.adjacent_edges.append((distance, node))
+        # self.adjacent_edges.append((distance, node))
+        self.adjacent_edges.append(EnvironmentGraph.Edge(distance, self, node))
 
 
     def set_robot_data(self, robot_data_obj: RobotData):
@@ -110,6 +111,19 @@ class EnvironmentNode:
 
 class EnvironmentGraph:
 
+
+    class Edge:
+        def __init__(self, traversal_cost: float, start_node: EnvironmentNode, dest_node: EnvironmentNode, passable_threshold: float = 70.0) -> None:
+            self.cost = traversal_cost
+            self.destination_node = dest_node
+            self.passable = self.is_climbable(start_node, dest_node)
+
+        def is_climbable(self, node1: EnvironmentNode, node2: EnvironmentNode, passable_thresh: float = 70.0):
+            if not node2.passable:
+                return False
+            else:
+                return calculate_incline_angle(node1, node2) <= passable_thresh
+
     def __init__(self, num_columns: int, num_rows: int) -> None:
         self.nodes = []
         for i in range(num_columns):            
@@ -125,6 +139,7 @@ class EnvironmentGraph:
             if node.y_coord < len(self.nodes[node.x_coord]):
                 self.nodes[node.x_coord][node.y_coord] = node
 
+    # Updates the adjacency list for every node in the graph
     def update_adjacent_nodes(self):
         for row in self.nodes:
             for node in row:
@@ -147,3 +162,9 @@ def distance_between_nodes(node_1: EnvironmentNode, node_2: EnvironmentNode):
 
         #distance = math.tan(elevation_diff/distance)
         return distance
+
+def calculate_incline_angle(node1: EnvironmentNode, node2: EnvironmentNode) -> float:
+    horizontal_distance = math.dist([node1.x_coord, node1.y_coord], [node2.x_coord, node2.y_coord])
+    vertical_distance = node2.elevation - node1.elevation
+    angle = math.degrees(math.atan(vertical_distance/horizontal_distance))
+    return angle

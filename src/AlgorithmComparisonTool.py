@@ -1,3 +1,4 @@
+from src.RobotData import RobotData
 from src.Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
 from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
 
@@ -5,11 +6,19 @@ from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
 
 class AlgorithmComparisonTool:
     def __init__(self) -> None:
+
+        self.robot_data = None
         self.supported_algorithms = {
             "A*": DefaultAStar,
             "Energy Cost A*": EnergyCostAStar
         }
 
+    def set_robot_data(self, robot_data_filepath: str):
+        try:
+            self.robot_data = RobotData(robot_data_filepath)
+        except Exception as exc:
+            self.robot_data = None
+            print(exc)
 
     # Universal function to run any supported algorithm
     def run_algorithm(self, algorithm_name: str, env_graph: EnvironmentGraph, start_cell_coords:tuple, end_cell_coords:tuple) -> "tuple(list, bool, str)":
