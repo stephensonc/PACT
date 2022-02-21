@@ -10,7 +10,11 @@ def test_set_robot_data():
     comparison_tool = AlgorithmComparisonTool()
     comparison_tool.set_robot_data("random_path/yeet")
 
-    assert comparison_tool.robot_data is None
+    robot_data_obj = comparison_tool.robot_data
+    assert robot_data_obj is not None
+    assert robot_data_obj.avg_movespeed is None
+    assert not robot_data_obj.has_all_data
+    assert robot_data_obj.max_passable_slope == 70.0
     
     comparison_tool.set_robot_data("robot_data/robot_example.yml")
     

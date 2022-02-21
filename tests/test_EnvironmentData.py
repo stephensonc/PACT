@@ -1,7 +1,14 @@
 
 
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
+from src.EnvironmentData import EnvironmentGraph, EnvironmentNode, calculate_incline_angle
 
+
+def test_calculate_incline_angle():
+    node1 = EnvironmentNode(0, 0, 0.0)
+    node2 = EnvironmentNode(0, 3, 4.0)
+
+    angle = calculate_incline_angle(node1, node2)
+    assert round(angle, 2) == 53.13
 
 def test_EnvironmentGraph():
     graph = EnvironmentGraph(3, 3)

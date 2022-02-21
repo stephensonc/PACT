@@ -1,12 +1,11 @@
 import math
-import numpy as np
 from src.RobotData import RobotData
 
 
 class EnvironmentNode:
 
 
-    # Each node is 1 meter away from the next in line
+    # Each node is 1 meter away from the next in line, not counting elevation differences
 
     def __init__(self, x_coordinate: int, y_coordinate: int, elevation: float, friction_coeff: float = 1.0, passable: bool = True):
         # Type annotations:

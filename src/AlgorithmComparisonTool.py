@@ -17,7 +17,7 @@ class AlgorithmComparisonTool:
         try:
             self.robot_data = RobotData(robot_data_filepath)
         except Exception as exc:
-            self.robot_data = None
+            self.robot_data = RobotData() # Auto-corrects to default path
             print(exc)
 
     # Universal function to run any supported algorithm
