@@ -1,8 +1,10 @@
+import os
 import yaml
+import math
 
 class RobotData:
 
-    def __init__(self, robot_yml_filepath: str = "robot_data/robot_example.yml"):
+    def __init__(self, robot_yml_filepath: str = ""):
 
         self.has_all_data = False
 
@@ -12,6 +14,7 @@ class RobotData:
         self.avg_movespeed = None
         self.max_movespeed = None
         self.max_passable_slope = None
+        self.wheel_circumference = None
 
         self.set_data(robot_yml_filepath)
 
@@ -38,10 +41,18 @@ class RobotData:
                     self.avg_movespeed = data_dict["average_movespeed_m/s"]
                     self.max_movespeed = data_dict["max_movespeed_m/s"]
                     self.max_passable_slope = data_dict["max_passable_slope"]
+
+                    self.wheel_circumference = self.calculate_wheel_circumference(self.wheel_radius)
+
                     self.has_all_data = True
                 except KeyError as exc:
                     print(exc)
         except FileNotFoundError as exc:
             print(exc)
+            print("File not found, here is a list of the available files in the robot_data folder:")
+            for filename in os.listdir("robot_data"):
+                print(filename)
 
+    def calculate_wheel_circumference(self, radius: float) -> float:
+        return 2 * math.pi * radius
             

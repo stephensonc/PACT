@@ -4,6 +4,8 @@ from RobotData import RobotData
 from EnvironmentData import EnvironmentGraph, EnvironmentNode
 from EnergyCostUtility import calculate_energy_cost
 
+
+# Abstract class dictating required inputs/output
 class Algorithm:
 
 
@@ -84,7 +86,7 @@ class DefaultAStar(Algorithm):
             while temp.previous_node is not None:
                 output_path.append(temp.previous_node)
                 temp = temp.previous_node
-            # Probably could return here
+            # return open_list, closed_list, current_node, output_path
 
         open_list = self.pop_node_from_list(open_list, current_node)
         closed_list.append(current_node) # TODO: Verify that current_node is an AStarEnvironmentNode
@@ -158,4 +160,7 @@ class EnergyCostAStar(DefaultAStar):
         return super().run(env_grid, start_cell_coords, dest_cell_coords)
 
     def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
-        return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
+        if start_node.coord_tuple == dest_node.coord_tuple:
+            return 0.0
+        else:
+            return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)

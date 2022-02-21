@@ -165,5 +165,11 @@ def distance_between_nodes(node_1: EnvironmentNode, node_2: EnvironmentNode):
 def calculate_incline_angle_degrees(node1: EnvironmentNode, node2: EnvironmentNode) -> float:
     horizontal_distance = math.dist([node1.x_coord, node1.y_coord], [node2.x_coord, node2.y_coord])
     vertical_distance = node2.elevation - node1.elevation
-    angle = math.degrees(math.atan(vertical_distance/horizontal_distance))
+    if horizontal_distance == 0:
+        print("Distance between nodes is zero")
+        print(node1.coord_tuple)
+        print(node2.coord_tuple)
+        angle = 0
+    else:
+        angle = math.degrees(math.atan(vertical_distance/horizontal_distance))
     return angle
