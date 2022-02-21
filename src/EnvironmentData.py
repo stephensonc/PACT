@@ -50,8 +50,6 @@ class EnvironmentNode:
 
         num_cols = len(graph_nodes)
         num_rows = len(graph_nodes[0])
-        
-        adj_node = None
 
         top_node = None
         top_left = None
@@ -97,16 +95,17 @@ class EnvironmentNode:
             if node is not None and node.passable:
                 dist = self.calculate_edge_cost(node)
                 self.add_adjacent_edge(dist, node)
+        for edge in self.adjacent_edges:
+            if edge.passable:
+                break
+            elif edge == self.adjacent_edges[-1]:
+                print(f"All adjacent nodes impassible for node at ({self.x_coord}, {self.y_coord})")
 
 
     def print(self):
         print(
-        f"""---------------
-        x: {self.x_coord}
-        y: {self.y_coord}
-        elevation: {self.elevation}
-        ---------------""",
-        end='')
+        f"| x: {self.x_coord}, y: {self.y_coord}, elevation: {self.elevation}"
+        , end=' |')
 
 class EnvironmentGraph:
 
@@ -123,6 +122,8 @@ class EnvironmentGraph:
             else:
                 return calculate_incline_angle_degrees(node1, node2) <= passable_thresh
 
+
+    # Num_columns is the width, num_rows is the height
     def __init__(self, num_columns: int, num_rows: int) -> None:
         self.nodes = []
         for i in range(num_columns):            
@@ -140,13 +141,13 @@ class EnvironmentGraph:
 
     # Updates the adjacency list for every node in the graph
     def update_adjacent_nodes(self):
-        for row in self.nodes:
-            for node in row:
+        for column in self.nodes:
+            for node in column:
                 node.get_adjacent_nodes(self.nodes)
 
     def print(self):
-        for row in self.nodes:
-            for node in row:
+        for column in self.nodes:
+            for node in column:
                 node.print()
             print()
 

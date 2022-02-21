@@ -9,33 +9,21 @@ def test_create_graph():
 
     tool = AlgorithmComparisonTool()
 
-    length = 3
     width = 3
+    height = 3
 
     elevations = [
-        10.1,
-        15.3,
-        18.4, 
-        10.3,
-        14.2,
-        5.5,
-        4.0,
-        6.7,
-        8.9
+        [10.1, 15.3, 18.4], 
+        [10.3, 14.2, 5.5],
+        [4.0,  6.7,  8.9]
         ]
     friction_coefficients = [
-        0.5,
-        1.2,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
+        [0.5, 1.2, 1],
+        [1,   1,   1],
+        [1,   1,   1]
     ]
 
-    graph = tool.create_graph(length, width, elevations, friction_coefficients)
+    graph = tool.create_graph(width, height, elevations, friction_coefficients)
     nodes = [
         EnvironmentNode(0, 0, 10.1),
         EnvironmentNode(0, 1, 15.3),
@@ -47,9 +35,14 @@ def test_create_graph():
         EnvironmentNode(2, 1, 6.7),
         EnvironmentNode(2, 2, 8.9)
     ]
+    assert len(graph.nodes) == width
+    assert len(graph.nodes[0]) == height
+
     idx = 0
-    for row in graph.nodes:
-        for node in row:
+    for column in graph.nodes:
+        for node in column:
+            assert node.x_coord == nodes[idx].x_coord
+            assert node.y_coord == nodes[idx].y_coord
             assert node.elevation == nodes[idx].elevation
             idx += 1
 

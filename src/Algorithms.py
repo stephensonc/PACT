@@ -61,7 +61,7 @@ class DefaultAStar(Algorithm):
             open_list, closed_list, current_node, output_path = self.start_pathing(open_list, closed_list, current_node, end_node)
             if len(output_path) > 0:
                 break
-
+        output_path.reverse()
         return output_path
 
     def start_pathing(self, open_list: "list[AStarEnvironmentNode]", closed_list: "list[AStarEnvironmentNode]", current_node: AStarEnvironmentNode, end_node: AStarEnvironmentNode):
