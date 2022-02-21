@@ -1,6 +1,6 @@
 
 
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode, calculate_incline_angle
+from EnvironmentData import EnvironmentGraph, EnvironmentNode, calculate_incline_angle
 
 
 def test_calculate_incline_angle():

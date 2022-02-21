@@ -1,8 +1,8 @@
 from math import dist
 from tracemalloc import start
-from src.RobotData import RobotData
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
-from src.EnergyCostUtility import calculate_energy_cost
+from RobotData import RobotData
+from EnvironmentData import EnvironmentGraph, EnvironmentNode
+from EnergyCostUtility import calculate_energy_cost
 
 class Algorithm:
 

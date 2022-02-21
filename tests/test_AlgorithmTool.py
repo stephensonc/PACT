@@ -1,8 +1,8 @@
 
 import pytest
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
+from EnvironmentData import EnvironmentGraph, EnvironmentNode
 
-from src.AlgorithmComparisonTool import AlgorithmComparisonTool
+from AlgorithmComparisonTool import AlgorithmComparisonTool
 
 
 def test_set_robot_data():

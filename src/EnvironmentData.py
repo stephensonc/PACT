@@ -1,5 +1,5 @@
 import math
-from src.RobotData import RobotData
+from RobotData import RobotData
 
 
 class EnvironmentNode:

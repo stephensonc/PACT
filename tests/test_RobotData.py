@@ -1,4 +1,4 @@
-from src.RobotData import RobotData
+from RobotData import RobotData
 
 
 def test_RobotData():

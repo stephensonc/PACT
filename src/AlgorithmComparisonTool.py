@@ -1,6 +1,6 @@
-from src.RobotData import RobotData
-from src.Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
+from RobotData import RobotData
+from Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
+from EnvironmentData import EnvironmentGraph, EnvironmentNode
 
 
 

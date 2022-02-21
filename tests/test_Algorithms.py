@@ -1,5 +1,5 @@
-from src.Algorithms import DefaultAStar
-from src.EnvironmentData import EnvironmentGraph, EnvironmentNode
+from Algorithms import DefaultAStar
+from EnvironmentData import EnvironmentGraph, EnvironmentNode
 
 
 def test_pop_node():

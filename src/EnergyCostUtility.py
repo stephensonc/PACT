@@ -1,5 +1,5 @@
-from src.EnvironmentData import EnvironmentNode
-from src.RobotData import RobotData
+from EnvironmentData import EnvironmentNode
+from RobotData import RobotData
 
 
 def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_data_obj: RobotData):
