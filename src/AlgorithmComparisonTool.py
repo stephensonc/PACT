@@ -1,3 +1,5 @@
+import math
+import random
 from EnergyCostUtility import calculate_energy_cost
 from RobotData import RobotData
 from Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
@@ -53,6 +55,32 @@ class AlgorithmComparisonTool:
             path_cost = calculate_energy_cost(node1, node2, self.robot_data)
             costs.append(path_cost)
         return costs
+
+    def auto_generate_graph(self, length, width) -> EnvironmentGraph:
+        elevations = []
+        for i in range(length * width):
+            elevations.append(float(random.randint(0, 300))/10)
+
+        friction_coefficients = []
+        for i in range(length * width):
+            friction_coefficients.append(float(random.randint(1, 40))/10)
+
+        return self.create_graph(length, width, elevations, friction_coefficients)
+
+    def create_graph(self, length: int, width: int, elevation_values: "list[float]", friction_coefficients: "list[float]") -> EnvironmentGraph:
+        graph = EnvironmentGraph(length, width)
+        if len(elevation_values) != length * width or len(friction_coefficients) != length * width:
+            print("Number of elevation values or friction coefficients not equal to number of nodes")
+            return None
+        else:
+            idx = 0
+            for row in graph.nodes:
+                for node in row:
+                    graph.nodes[node.x_coord][node.y_coord] = EnvironmentNode(node.x_coord, node.y_coord, elevation_values[idx], friction_coefficients[idx])
+                    idx += 1        
+        return graph
+
+
 
     def main(self):
         graph = EnvironmentGraph(3, 3)

@@ -2,7 +2,7 @@ from RobotData import RobotData
 
 
 def test_RobotData():
-    robot_data_obj = RobotData()
+    robot_data_obj = RobotData("robot_data/robot_example.yml")
 
     attributes = [
         robot_data_obj.kg_weight,

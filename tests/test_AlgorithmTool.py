@@ -5,6 +5,56 @@ from EnvironmentData import EnvironmentGraph, EnvironmentNode
 from AlgorithmComparisonTool import AlgorithmComparisonTool
 
 
+def test_create_graph():
+
+    tool = AlgorithmComparisonTool()
+
+    length = 3
+    width = 3
+
+    elevations = [
+        10.1,
+        15.3,
+        18.4, 
+        10.3,
+        14.2,
+        5.5,
+        4.0,
+        6.7,
+        8.9
+        ]
+    friction_coefficients = [
+        0.5,
+        1.2,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+    ]
+
+    graph = tool.create_graph(length, width, elevations, friction_coefficients)
+    nodes = [
+        EnvironmentNode(0, 0, 10.1),
+        EnvironmentNode(0, 1, 15.3),
+        EnvironmentNode(0, 2, 18.4),
+        EnvironmentNode(1, 0, 10.3),
+        EnvironmentNode(1, 1, 14.2),
+        EnvironmentNode(1, 2, 5.5),
+        EnvironmentNode(2, 0, 4.0),
+        EnvironmentNode(2, 1, 6.7),
+        EnvironmentNode(2, 2, 8.9)
+    ]
+    idx = 0
+    for row in graph.nodes:
+        for node in row:
+            assert node.elevation == nodes[idx].elevation
+            idx += 1
+
+
+
 def test_set_robot_data():
 
     comparison_tool = AlgorithmComparisonTool()
