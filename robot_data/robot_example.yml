@@ -1,6 +1,8 @@
 weight_in_kg: 30.5 # Kilograms
+number_of_wheels: 4 # No unit
 wheel_friction_coefficient: 0.8 # No unit
 wheel_radius_meters: 0.2 # Meters
+individual_wheel_torque: 3.56 # Newton Meters
 average_movespeed_m/s: 7.3 # Meters per second
 max_movespeed_m/s: 10.0 # Meters per Second
 max_passable_slope: 70.0 # Degrees

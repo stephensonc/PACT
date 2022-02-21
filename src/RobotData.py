@@ -8,6 +8,7 @@ class RobotData:
 
         self.kg_weight = None
         self.friction_coefficient = None
+        self.wheel_radius = None
         self.avg_movespeed = None
         self.max_movespeed = None
         self.max_passable_slope = None
@@ -31,6 +32,9 @@ class RobotData:
                 try:
                     self.kg_weight = data_dict["weight_in_kg"]
                     self.friction_coefficient = data_dict["wheel_friction_coefficient"]
+                    self.number_of_wheels = data_dict["number_of_wheels"]
+                    self.wheel_radius = data_dict["wheel_radius_meters"]
+                    self.individual_wheel_torque = data_dict["individual_wheel_torque"]
                     self.avg_movespeed = data_dict["average_movespeed_m/s"]
                     self.max_movespeed = data_dict["max_movespeed_m/s"]
                     self.max_passable_slope = data_dict["max_passable_slope"]

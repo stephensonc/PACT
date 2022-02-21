@@ -121,7 +121,7 @@ class EnvironmentGraph:
             if not node2.passable:
                 return False
             else:
-                return calculate_incline_angle(node1, node2) <= passable_thresh
+                return calculate_incline_angle_degrees(node1, node2) <= passable_thresh
 
     def __init__(self, num_columns: int, num_rows: int) -> None:
         self.nodes = []
@@ -162,7 +162,7 @@ def distance_between_nodes(node_1: EnvironmentNode, node_2: EnvironmentNode):
         #distance = math.tan(elevation_diff/distance)
         return distance
 
-def calculate_incline_angle(node1: EnvironmentNode, node2: EnvironmentNode) -> float:
+def calculate_incline_angle_degrees(node1: EnvironmentNode, node2: EnvironmentNode) -> float:
     horizontal_distance = math.dist([node1.x_coord, node1.y_coord], [node2.x_coord, node2.y_coord])
     vertical_distance = node2.elevation - node1.elevation
     angle = math.degrees(math.atan(vertical_distance/horizontal_distance))
