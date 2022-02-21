@@ -1,0 +1,9 @@
+name: Run Pytest workflow
+on: [push]
+
+jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: python --version
