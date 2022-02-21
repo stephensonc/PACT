@@ -42,7 +42,6 @@ class DefaultAStar(Algorithm):
 
 
     def run(self, env_grid:EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[AStarEnvironmentNode]":
-        print("Running default AStar")
         open_list = []
         closed_list = []
         current_node = None
@@ -158,5 +157,5 @@ class EnergyCostAStar(DefaultAStar):
                 node.set_robot_data(self.robot_data_obj)
         return super().run(env_grid, start_cell_coords, dest_cell_coords)
 
-    def get_h_value(start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
-        return calculate_energy_cost(start_node, dest_node)
+    def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
+        return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)

@@ -25,6 +25,8 @@ class AlgorithmComparisonTool:
         successfully_ran: bool = False
         return_message = ""
         output_path = []
+
+        print(f"Running algorithm: {algorithm_name}")
         try:
             alg_obj: Algorithm = self.supported_algorithms[algorithm_name]()
             output_path = alg_obj.run(env_graph, start_cell_coords, end_cell_coords)
@@ -63,13 +65,17 @@ class AlgorithmComparisonTool:
         end_cell = (2, 1)
 
 
-        path, run_success, return_msg = self.run_algorithm("A*", start_cell, end_cell)
+        path, run_success, return_msg = self.run_algorithm("A*", graph, start_cell, end_cell)
         if not run_success:
             print(f"Algorithm run failed for reason: {return_msg}")
         for node in path:
             print(f"({node.x_coord}, {node.y_coord})")
 
-
+        path, run_success, return_msg = self.run_algorithm("Energy Cost A*", graph, start_cell, end_cell)
+        if not run_success:
+            print(f"Algorithm run failed for reason: {return_msg}")
+        for node in path:
+            print(f"({node.x_coord}, {node.y_coord})")
 
 if __name__ == "__main__":
     tool_obj = AlgorithmComparisonTool()
