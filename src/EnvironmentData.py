@@ -1,4 +1,5 @@
 import math
+import numpy as np
 from RobotData import RobotData
 
 
@@ -95,11 +96,12 @@ class EnvironmentNode:
             if node is not None and node.passable:
                 dist = self.calculate_edge_cost(node)
                 self.add_adjacent_edge(dist, node)
-        for edge in self.adjacent_edges:
-            if edge.passable:
-                break
-            elif edge == self.adjacent_edges[-1]:
-                print(f"All adjacent nodes impassible for node at ({self.x_coord}, {self.y_coord})")
+        
+        # for edge in self.adjacent_edges:
+        #     if edge.passable:
+        #         break
+        #     elif edge == self.adjacent_edges[-1]:
+        #         print(f"All adjacent nodes impassible for node at ({self.x_coord}, {self.y_coord})")
 
 
     def print(self):
@@ -146,7 +148,8 @@ class EnvironmentGraph:
                 node.get_adjacent_nodes(self.nodes)
 
     def print(self):
-        for column in self.nodes:
+        transposed_node_array = np.transpose(self.nodes)
+        for column in transposed_node_array:
             for node in column:
                 node.print()
             print()

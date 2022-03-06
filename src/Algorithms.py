@@ -8,7 +8,6 @@ from EnergyCostUtility import calculate_energy_cost
 # Abstract class dictating required inputs/output
 class Algorithm:
 
-
     def __init__(self, robot_data_obj: RobotData = None) -> None:
         self.robot_data_obj = RobotData() if robot_data_obj is None else robot_data_obj
 
@@ -163,4 +162,6 @@ class EnergyCostAStar(DefaultAStar):
         if start_node.coord_tuple == dest_node.coord_tuple:
             return 0.0
         else:
-            return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
+            energy_cost = calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
+            #print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
+            return energy_cost

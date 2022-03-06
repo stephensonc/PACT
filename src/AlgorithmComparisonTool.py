@@ -145,9 +145,9 @@ class AlgorithmComparisonTool:
             print(f"({node.x_coord}, {node.y_coord})")
 
         path_costs = self.calculate_individual_path_costs(path)
-        for path_cost in path_costs:
-            print(path_cost)
-
+        # for path_cost in path_costs:
+        #     print(path_cost)
+        print("Total energy cost:", self.calculate_energy_cost_of_path(path))
 
         path, run_success, return_msg = self.run_algorithm("Energy Cost A*", graph, start_cell, end_cell)
         if not run_success:
@@ -155,8 +155,10 @@ class AlgorithmComparisonTool:
         for node in path:
             print(f"({node.x_coord}, {node.y_coord})")
         path_costs = self.calculate_individual_path_costs(path)
-        for path_cost in path_costs:
-            print(path_cost)
+        # for path_cost in path_costs:
+        #     print(path_cost)
+
+        print("Total energy cost:", self.calculate_energy_cost_of_path(path))
 
 if __name__ == "__main__":
     tool_obj = AlgorithmComparisonTool()

@@ -1,11 +1,7 @@
 from cmath import sqrt
 import pytest
 
+from EnergyCostUtility import calculate_required_wheel_rotations
 
-
-# def test_distance_between_nodes():
-#     node1 = EnvironmentNode(0.0, 19.2, 0.0)
-#     node2 = EnvironmentNode(14.1, 25.0, 0.0)
-#     dist = distance_between_nodes(node1, node2)
-#     198.81 + 33.64 
-#     assert dist == sqrt(pow(14.1, 2) + pow(25.0 - 19.2, 2))
+def test_calculate_required_wheel_rotations():
+    assert calculate_required_wheel_rotations(2.0, )
