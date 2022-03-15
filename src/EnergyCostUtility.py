@@ -4,7 +4,7 @@ from RobotData import RobotData
 import math
 
 
-GRAVITY_ACCEL = 9.81
+GRAVITY_ACCEL = 9.81 # m/s^2
 
 
 def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_data_obj: RobotData) -> float:
@@ -19,9 +19,9 @@ def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_
     incline_angle_deg = calculate_incline_angle_degrees(node1, node2)
     velocity = robot_data_obj.avg_movespeed
     
-    # Correct the sign on the velocity to reflect upward/downward movement
-    if incline_angle_deg < 0:
-        velocity = 0 - velocity
+    # # Correct the sign on the velocity to reflect upward/downward movement
+    # if incline_angle_deg < 0:
+    #     velocity = 0 - velocity
 
     travel_distance = distance_between_nodes(node1, node2)
     

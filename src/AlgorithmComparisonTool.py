@@ -1,6 +1,7 @@
 import math
 import random
 from EnergyCostUtility import calculate_energy_cost
+from NavMenu import NavMenu
 from RobotData import RobotData
 from Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
 from EnvironmentData import EnvironmentGraph, EnvironmentNode
@@ -91,6 +92,42 @@ class AlgorithmComparisonTool:
 
 
 
+    def run_tool(self):
+
+
+        supported_alg_names = self.supported_algorithms.keys()
+        
+        menu = NavMenu(supported_alg_names)
+
+        graph = None
+
+        choice = ""
+        while choice.lower() != "exit":
+            menu.reset_menu()
+            choice = input("Please choose a menu option by typing in its label: ")
+            menu.select_option(choice)
+
+            if choice == "Run Selected Algorithms":
+                graph_width = menu.env_dimensions[0]
+                graph_height = menu.env_dimensions[1]
+                graph = self.auto_create_graph(graph_width, graph_height)
+
+                start_cell, end_cell = menu.prompt_for_coords()
+                print(start_cell)
+                print(end_cell)
+                for alg in menu.algorithms_to_run:
+                    path, run_success, return_msg = self.run_algorithm(alg, graph, start_cell, end_cell)
+                    if not run_success:
+                        print(f"Algorithm run failed for reason: {return_msg}")
+                    for node in path:
+                        print(f"({node.x_coord}, {node.y_coord})")
+
+                    print("Total energy cost:", self.calculate_energy_cost_of_path(path))
+                input("Press enter to continue: ")
+                        
+
+
+
     def main(self):
         # graph = EnvironmentGraph(3, 3)
 
@@ -162,4 +199,4 @@ class AlgorithmComparisonTool:
 
 if __name__ == "__main__":
     tool_obj = AlgorithmComparisonTool()
-    tool_obj.main()
+    tool_obj.run_tool()
