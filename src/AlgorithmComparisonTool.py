@@ -1,4 +1,5 @@
 import math
+import time
 import random
 from EnergyCostUtility import calculate_energy_cost
 from NavMenu import NavMenu
@@ -113,18 +114,28 @@ class AlgorithmComparisonTool:
                 graph = self.auto_create_graph(graph_width, graph_height)
 
                 start_cell, end_cell = menu.prompt_for_coords()
-                print(start_cell)
-                print(end_cell)
+                # print(start_cell)
+                # print(end_cell)
                 for alg in menu.algorithms_to_run:
+                    start_time = time.time()
+
                     path, run_success, return_msg = self.run_algorithm(alg, graph, start_cell, end_cell)
+
+                    end_time = time.time()
+
+                    print(f"Time taken to run algorithm: {end_time - start_time} seconds.")
+
                     if not run_success:
                         print(f"Algorithm run failed for reason: {return_msg}")
                     for node in path:
-                        print(f"({node.x_coord}, {node.y_coord})")
+                        print(f"({node.x_coord}, {node.y_coord})")                    
+
+
 
                     print("Total energy cost:", self.calculate_energy_cost_of_path(path))
                 input("Press enter to continue: ")
                         
+
 
 
 
