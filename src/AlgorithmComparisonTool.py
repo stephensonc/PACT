@@ -1,6 +1,8 @@
-import math
 import time
 import random
+import numpy as np
+import matplotlib.pyplot as plt
+
 from EnergyCostUtility import calculate_energy_cost
 from NavMenu import NavMenu
 from RobotData import RobotData
@@ -70,7 +72,7 @@ class AlgorithmComparisonTool:
         for i in range(width):
             row = []
             for j in range(height):
-                row.append(float(random.randint(1, 40))/10)
+                row.append(float(random.randint(7, 20))/10)
             friction_coefficients.append(row)
 
         return self.create_graph(width, height, elevations, friction_coefficients)
@@ -92,7 +94,15 @@ class AlgorithmComparisonTool:
         return graph
 
 
+    def plot_paths(self, paths: dict):
+        plt.title("Paths taken to objective")
+        for alg_name in paths.keys():
+            x_coords = np.array([coord_pair[0] for coord_pair in paths[alg_name]])
+            y_coords = np.array([coord_pair[1] for coord_pair in paths[alg_name]])
+            plt.plot(x_coords, y_coords, label=alg_name)
+        plt.show()
 
+    
     def run_tool(self):
 
 
@@ -116,6 +126,9 @@ class AlgorithmComparisonTool:
                 start_cell, end_cell = menu.prompt_for_coords()
                 # print(start_cell)
                 # print(end_cell)
+
+
+                paths = {}
                 for alg in menu.algorithms_to_run:
                     start_time = time.time()
 
@@ -123,16 +136,21 @@ class AlgorithmComparisonTool:
 
                     end_time = time.time()
 
-                    print(f"Time taken to run algorithm: {end_time - start_time} seconds.")
-
                     if not run_success:
                         print(f"Algorithm run failed for reason: {return_msg}")
-                    for node in path:
-                        print(f"({node.x_coord}, {node.y_coord})")                    
 
+                    else: 
+                        print("Total energy cost:", self.calculate_energy_cost_of_path(path), "Joules")
+                        print(f"Time taken to run algorithm: {end_time - start_time} seconds.")
+                        print()
+                        
+                        path_coords = [(node.x_coord, node.y_coord) for node in path]
+                        paths.update({alg: path_coords}) # algorithm name, path
+                    # for node in path:
+                    #     print(f"({node.x_coord}, {node.y_coord})") 
 
-
-                    print("Total energy cost:", self.calculate_energy_cost_of_path(path))
+                self.plot_paths(paths)
+                    
                 input("Press enter to continue: ")
                         
 
