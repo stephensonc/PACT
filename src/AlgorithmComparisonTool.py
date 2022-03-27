@@ -47,11 +47,14 @@ class AlgorithmComparisonTool:
 
         return output_path, successfully_ran, return_message
 
-    def calculate_energy_cost_of_path(self, final_path: "list[tuple(int, int)]") -> float:
+    def calculate_energy_cost_of_path(self, final_path: "list[tuple[int]]") -> float:
         path_costs = self.calculate_individual_path_costs(final_path)
-        return sum(path_costs)
+        total_cost = 0
+        for cost in path_costs:
+            total_cost += cost
+        return total_cost
     
-    def calculate_individual_path_costs(self, final_path: "list[tuple(int, int)]") -> "list[float]":
+    def calculate_individual_path_costs(self, final_path: "list[tuple[int]]") -> "list[float]":
         costs = []
         for i in range(len(final_path) - 1):
             node1 = final_path[i]
@@ -65,7 +68,7 @@ class AlgorithmComparisonTool:
         for i in range(width):
             row = []
             for j in range(height):
-                row.append(float(random.randint(0, 100))/10)
+                row.append(float(random.randint(0, 10)))
             elevations.append(row)
 
         friction_coefficients = []
@@ -100,6 +103,9 @@ class AlgorithmComparisonTool:
             x_coords = np.array([coord_pair[0] for coord_pair in paths[alg_name]])
             y_coords = np.array([coord_pair[1] for coord_pair in paths[alg_name]])
             plt.plot(x_coords, y_coords, label=alg_name)
+        plt.xlabel("Meters")
+        plt.ylabel("Meters")
+        plt.legend(paths.keys())
         plt.show()
 
     
@@ -141,7 +147,7 @@ class AlgorithmComparisonTool:
 
                     else: 
                         print("Total energy cost:", self.calculate_energy_cost_of_path(path), "Joules")
-                        print(f"Time taken to run algorithm: {end_time - start_time} seconds.")
+                        print(f"Time taken to run algorithm: {round(end_time - start_time, 2)} seconds.")
                         print()
                         
                         path_coords = [(node.x_coord, node.y_coord) for node in path]
@@ -154,27 +160,7 @@ class AlgorithmComparisonTool:
                 input("Press enter to continue: ")
                         
 
-
-
-
     def main(self):
-        # graph = EnvironmentGraph(3, 3)
-
-        
-        # nodes = [
-        #     EnvironmentNode(0, 0, 10.1),
-        #     EnvironmentNode(0, 1, 15.3),
-        #     EnvironmentNode(0, 2, 18.4),
-        #     EnvironmentNode(1, 0, 10.3),
-        #     EnvironmentNode(1, 1, 14.2, passable=False),
-        #     EnvironmentNode(1, 2, 5.5, passable=False),
-        #     EnvironmentNode(2, 0, 4.0),
-        #     EnvironmentNode(2, 1, 6.7),
-        #     EnvironmentNode(2, 2, 8.9)
-        # ]
-        # for node in nodes:
-        #     graph.add_node(node)
-
 
         width = 5
         height = 4

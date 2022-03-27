@@ -1,7 +1,6 @@
 from math import dist
-from tracemalloc import start
 from RobotData import RobotData
-from EnvironmentData import EnvironmentGraph, EnvironmentNode
+from EnvironmentData import EnvironmentGraph, EnvironmentNode, distance_between_nodes_no_elevation
 from EnergyCostUtility import calculate_energy_cost
 
 
@@ -135,7 +134,7 @@ class DefaultAStar(Algorithm):
         return open_list
 
     def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
-        return dist(start_node.coord_tuple, dest_node.coord_tuple) 
+        return distance_between_nodes_no_elevation(start_node, dest_node) 
 
 
 class EnergyCostAStar(DefaultAStar):
@@ -147,21 +146,61 @@ class EnergyCostAStar(DefaultAStar):
 
         def __init__(self, node: EnvironmentNode) -> None:
             super().__init__(node)
+            self.env_grid = None
         
         def calculate_edge_cost(self, target_node: EnvironmentNode) -> float:
             return calculate_energy_cost(self, target_node, self.robot_data_obj)
 
 
     def run(self, env_grid: EnvironmentGraph, start_cell_coords: tuple, dest_cell_coords: tuple) -> "list[DefaultAStar.AStarEnvironmentNode]":
+        self.env_grid = env_grid
         for row in env_grid.nodes:
             for node in row:
                 node.set_robot_data(self.robot_data_obj)
         return super().run(env_grid, start_cell_coords, dest_cell_coords)
 
     def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
+        heuristic_cost = 0
         if start_node.coord_tuple == dest_node.coord_tuple:
             return 0.0
         else:
-            energy_cost = calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
-            #print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
-            return energy_cost
+
+
+            # num_nodes_to_find = int(len(self.env_grid.nodes)/5)
+
+            num_nodes_to_find = self.get_num_nodes_to_find(start_node, dest_node) # between the start and end node
+
+            x_increment = int((dest_node.x_coord - start_node.x_coord) / num_nodes_to_find)
+            y_increment = int((dest_node.y_coord - start_node.y_coord) / num_nodes_to_find)
+
+            current_node = start_node
+            # print(f"Current node x,y: ({current_node.x_coord},{current_node.y_coord})")
+
+            for i in range(1, num_nodes_to_find + 1):
+                # Get coordinates of a node (1/num_nodes_to_find) of the way to the final path node
+                x_coord = current_node.x_coord + x_increment
+                y_coord = current_node.y_coord + y_increment
+
+                if x_coord == current_node.x_coord:
+                    x_coord = dest_node.x_coord
+                if y_coord == current_node.x_coord:
+                    y_coord == dest_node.x_coord
+                
+                
+                # print(f"\tHeuristic node x,y: ({x_coord},{y_coord})")
+
+                # Update the node being used for the heuristic
+                heuristic_node = self.env_grid.nodes[x_coord][y_coord]
+                energy_cost = calculate_energy_cost(current_node, heuristic_node, self.robot_data_obj)
+                # Add the cost between these two nodes to the list
+                heuristic_cost += energy_cost
+                
+                # move to the next node of the (num_nodes_to_find) nodes to traverse
+                current_node = heuristic_node
+            # print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
+
+            return heuristic_cost
+
+    def get_num_nodes_to_find(self, node1: EnvironmentNode, node2: EnvironmentNode):
+        num_nodes = int(distance_between_nodes_no_elevation(node1, node2)/2)
+        return num_nodes if num_nodes > 0 else 1

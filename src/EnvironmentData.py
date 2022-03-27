@@ -154,7 +154,6 @@ class EnvironmentGraph:
                 node.print()
             print()
 
-
 def distance_between_nodes(node_1: EnvironmentNode, node_2: EnvironmentNode):
         """ Get the distance between two nodes in meters, including elevation."""
         distance = math.dist(
@@ -166,13 +165,18 @@ def distance_between_nodes(node_1: EnvironmentNode, node_2: EnvironmentNode):
         #distance = math.tan(elevation_diff/distance)
         return distance
 
+def distance_between_nodes_no_elevation(node_1: EnvironmentNode, node_2: EnvironmentNode):
+    return math.dist(
+            [node_1.x_coord, node_1.y_coord],
+            [node_2.x_coord, node_2.y_coord])
+
 def calculate_incline_angle_degrees(node1: EnvironmentNode, node2: EnvironmentNode) -> float:
     horizontal_distance = math.dist([node1.x_coord, node1.y_coord], [node2.x_coord, node2.y_coord])
     vertical_distance = node2.elevation - node1.elevation
     if horizontal_distance == 0:
-        print("Distance between nodes is zero")
-        print(node1.coord_tuple)
-        print(node2.coord_tuple)
+        # print("Distance between nodes is zero")
+        # print(node1.coord_tuple)
+        # print(node2.coord_tuple)
         angle = 0
     else:
         angle = math.degrees(math.atan(vertical_distance/horizontal_distance))
