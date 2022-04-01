@@ -1,5 +1,3 @@
-from platform import node
-from this import d
 from EnvironmentData import EnvironmentNode, calculate_incline_angle_degrees, distance_between_nodes
 from RobotData import RobotData
 import math

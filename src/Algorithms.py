@@ -1,6 +1,5 @@
-from math import dist
 from RobotData import RobotData
-from EnvironmentData import EnvironmentGraph, EnvironmentNode, distance_between_nodes_no_elevation
+from EnvironmentData import EnvironmentGraph, EnvironmentNode, distance_between_nodes, distance_between_nodes_no_elevation
 from EnergyCostUtility import calculate_energy_cost
 
 
@@ -134,7 +133,7 @@ class DefaultAStar(Algorithm):
         return open_list
 
     def get_h_value(self, start_node: EnvironmentNode, dest_node: EnvironmentNode) -> int:
-        return distance_between_nodes_no_elevation(start_node, dest_node) 
+        return distance_between_nodes(start_node, dest_node) 
 
 
 class EnergyCostAStar(DefaultAStar):

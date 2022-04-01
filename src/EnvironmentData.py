@@ -147,6 +147,27 @@ class EnvironmentGraph:
             for node in column:
                 node.get_adjacent_nodes(self.nodes)
 
+    def get_dict_form(self):
+        env_dict = {}
+        env_dict.update({"width": len(self.nodes)})
+        env_dict.update({"height": len(self.nodes[0])})
+        
+        elevations = []
+        fric_coeffs = []
+        for node_list in self.nodes:
+            row_elevations = []
+            row_frics = []
+            for node in node_list:
+                node: EnvironmentNode
+                row_elevations.append(node.elevation)
+                row_frics.append(node.friction_coefficient)
+            elevations.append(row_elevations)
+            fric_coeffs.append(row_frics)
+
+        env_dict.update({"elevations": elevations})
+        env_dict.update({"friction_coefficients": fric_coeffs})
+        return env_dict
+
     def print(self):
         transposed_node_array = np.transpose(self.nodes)
         for column in transposed_node_array:

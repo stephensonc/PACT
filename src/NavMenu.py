@@ -1,19 +1,23 @@
 import os
-
-from EnvironmentData import EnvironmentGraph
+import json
+from EnvironmentData import EnvironmentGraph, EnvironmentNode
 class NavMenu:
 
     def __init__(self, supported_algorithm_names:"list[str]") -> None:
 
         self.env_created: bool = False
         self.env_dimensions: tuple = (0,0)
+        self.env_elevations = []
+        self.env_fric_coeffs = []
+
         self.supported_alg_names = supported_algorithm_names
 
         self.menu_options = {
             "Create Environment" : self.create_env_selected,
-            # "Modify Environment" : self.modify_env,
+            "Import Environment from File" : self.import_env,
+            "Export Environment to File" : self.prompt_for_output_filename,
             "Add Algorithm to Run" : self.add_algorithm_selected,
-            "Run Selected Algorithms" : self.run_algorithms,
+            "Run Selected Algorithms" : self.run_algorithms, # Currently handled by AlgorithmComparisonTool
             "Exit" : exit
         }
         self.algorithms_to_run = ["A*", "Energy Cost A*"]
@@ -57,7 +61,7 @@ class NavMenu:
     # Add algorithm to the comparison
 
     def add_algorithm_selected(self):
-        algorithm_name = input("Please enter ")
+        algorithm_name = input("Please enter algorithm name: ")
         if algorithm_name in self.supported_alg_names:
             self.algorithms_to_run.append(algorithm_name)
         else:
@@ -94,8 +98,37 @@ class NavMenu:
 
     # End Create Env handling
 
-    def modify_env():
-        return
+    def import_env(self):
+        env_data_path = "stored_environments"
+        path_divider = "\\" if os.name == "nt" else "/"
+
+        print("Environment files found: ", end="")
+        for file in os.listdir(env_data_path):
+            print(file, end="")
+        print()
+        filename = input("Please enter the filename for the environment: ")
+
+        file_path = env_data_path + path_divider + filename
+        
+        env_data_dict = None
+
+        with open(file_path) as file:
+            env_data_dict = json.load(file)
+        
+        self.env_dimensions = (env_data_dict["width"], env_data_dict["height"])
+        self.env_elevations = env_data_dict["elevations"]
+        self.env_fric_coeffs = env_data_dict["friction_coefficients"]
+
+        self.env_created = True
+
+    
+    
+
+    def prompt_for_output_filename(self):
+        return input("Please enter a filename for the environment file: ")
+
+
+
 
     def run_algorithms(self):
         return

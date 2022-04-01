@@ -1,3 +1,5 @@
+import json
+import os
 import time
 import random
 import numpy as np
@@ -7,7 +9,7 @@ from EnergyCostUtility import calculate_energy_cost
 from NavMenu import NavMenu
 from RobotData import RobotData
 from Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
-from EnvironmentData import EnvironmentGraph, EnvironmentNode
+from EnvironmentData import EnvironmentGraph, EnvironmentNode, distance_between_nodes
 
 
 
@@ -19,6 +21,7 @@ class AlgorithmComparisonTool:
             "Energy Cost A*": EnergyCostAStar
         }        
         self.set_robot_data()
+        self.env_graph = None
 
     def set_robot_data(self, robot_data_filepath: str = "robot_data/robot_example.yml"):
         try:
@@ -47,6 +50,27 @@ class AlgorithmComparisonTool:
 
         return output_path, successfully_ran, return_message
 
+
+
+
+    # Path diagnostic data
+
+    def calculate_distance_of_path(self, final_path: "list[tuple[int]]") -> float:
+        path_costs = self.calculate_individual_path_distances(final_path)
+        total_cost = 0
+        for cost in path_costs:
+            total_cost += cost
+        return total_cost
+    
+    def calculate_individual_path_distances(self, final_path: "list[tuple[int]]") -> "list[float]":
+        costs = []
+        for i in range(len(final_path) - 1):
+            node1 = final_path[i]
+            node2 = final_path[i + 1]
+            path_cost = distance_between_nodes(node1, node2)
+            costs.append(path_cost)
+        return costs
+
     def calculate_energy_cost_of_path(self, final_path: "list[tuple[int]]") -> float:
         path_costs = self.calculate_individual_path_costs(final_path)
         total_cost = 0
@@ -62,6 +86,11 @@ class AlgorithmComparisonTool:
             path_cost = calculate_energy_cost(node1, node2, self.robot_data)
             costs.append(path_cost)
         return costs
+
+
+    # End Path diagnostic data
+
+
 
     def auto_create_graph(self, width, height) -> EnvironmentGraph:
         elevations = []
@@ -82,7 +111,7 @@ class AlgorithmComparisonTool:
 
 
     # Fills elevations and friction by columns first
-    def create_graph(self, width: int, height: int, elevation_values: "list[list[float]]", friction_coefficients: "list[float]") -> EnvironmentGraph:
+    def create_graph(self, width: int, height: int, elevation_values: "list[list[float]]", friction_coefficients: "list[list[float]]") -> EnvironmentGraph:
         graph = EnvironmentGraph(width, height)
 
 
@@ -98,37 +127,62 @@ class AlgorithmComparisonTool:
 
 
     def plot_paths(self, paths: dict):
-        plt.title("Paths taken to objective")
+        figure = plt.figure()
+        axes = plt.axes(projection='3d')
+        axes.set_title("Map: Paths taken to objective")
         for alg_name in paths.keys():
-            x_coords = np.array([coord_pair[0] for coord_pair in paths[alg_name]])
-            y_coords = np.array([coord_pair[1] for coord_pair in paths[alg_name]])
-            plt.plot(x_coords, y_coords, label=alg_name)
-        plt.xlabel("Meters")
-        plt.ylabel("Meters")
-        plt.legend(paths.keys())
+            x_coords = np.array([coord_tuple[0] for coord_tuple in paths[alg_name]])
+            y_coords = np.array([coord_tuple[1] for coord_tuple in paths[alg_name]])
+            z_coords = np.array([coord_tuple[2] for coord_tuple in paths[alg_name]])
+            # plt.plot(x_coords, y_coords, z_coords, label=alg_name)
+            axes.plot3D(x_coords, y_coords, z_coords, label=alg_name)
+    
+
+        axes.set_xlabel("X coordinate (meters)")
+        axes.set_ylabel("Y coordinate (meters)")
+        axes.set_zlabel("Elevation (meters)")
+        axes.legend(paths.keys())
         plt.show()
 
     
+    def write_env_to_file(self, filename: str):
+        env_path = "stored_environments"
+
+        filename = filename if ".json" in filename else filename + ".json"
+        path_divider = "\\" if os.name == "nt" else "/"
+        env_dict = self.env_graph.get_dict_form()
+
+        with open(env_path + path_divider + filename, "w") as file:
+            json.dump(env_dict, file)
+
+
     def run_tool(self):
-
-
         supported_alg_names = self.supported_algorithms.keys()
         
         menu = NavMenu(supported_alg_names)
-
-        graph = None
 
         choice = ""
         while choice.lower() != "exit":
             menu.reset_menu()
             choice = input("Please choose a menu option by typing in its label: ")
-            menu.select_option(choice)
+            option_output = menu.select_option(choice)
 
-            if choice == "Run Selected Algorithms":
+
+            if choice == "Create Environment":
                 graph_width = menu.env_dimensions[0]
                 graph_height = menu.env_dimensions[1]
-                graph = self.auto_create_graph(graph_width, graph_height)
+                self.env_graph = self.auto_create_graph(graph_width, graph_height)
 
+
+            if choice == "Import Environment from File":
+                self.env_graph = self.create_graph(menu.env_dimensions[0], menu.env_dimensions[1], menu.env_elevations, menu.env_fric_coeffs)
+
+            if choice == "Export Environment to File":
+                self.write_env_to_file(option_output) # option_output will be the filename
+
+
+            if choice == "Run Selected Algorithms":
+                
                 start_cell, end_cell = menu.prompt_for_coords()
                 # print(start_cell)
                 # print(end_cell)
@@ -138,7 +192,7 @@ class AlgorithmComparisonTool:
                 for alg in menu.algorithms_to_run:
                     start_time = time.time()
 
-                    path, run_success, return_msg = self.run_algorithm(alg, graph, start_cell, end_cell)
+                    path, run_success, return_msg = self.run_algorithm(alg, self.env_graph, start_cell, end_cell)
 
                     end_time = time.time()
 
@@ -150,7 +204,7 @@ class AlgorithmComparisonTool:
                         print(f"Time taken to run algorithm: {round(end_time - start_time, 2)} seconds.")
                         print()
                         
-                        path_coords = [(node.x_coord, node.y_coord) for node in path]
+                        path_coords = [(node.x_coord, node.y_coord, node.elevation) for node in path]
                         paths.update({alg: path_coords}) # algorithm name, path
                     # for node in path:
                     #     print(f"({node.x_coord}, {node.y_coord})") 
@@ -159,6 +213,7 @@ class AlgorithmComparisonTool:
                     
                 input("Press enter to continue: ")
                         
+
 
     def main(self):
 
