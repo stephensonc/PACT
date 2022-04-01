@@ -5,7 +5,7 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 
-from EnergyCostUtility import calculate_energy_cost
+from EnergyCostUtility import calculate_energy_cost, calculate_time_to_traverse
 from NavMenu import NavMenu
 from RobotData import RobotData
 from Algorithms import Algorithm, DefaultAStar, EnergyCostAStar
@@ -55,14 +55,14 @@ class AlgorithmComparisonTool:
 
     # Path diagnostic data
 
-    def calculate_distance_of_path(self, final_path: "list[tuple[int]]") -> float:
+    def calculate_distance_of_path(self, final_path: "list[EnvironmentNode]") -> float:
         path_costs = self.calculate_individual_path_distances(final_path)
         total_cost = 0
         for cost in path_costs:
             total_cost += cost
         return total_cost
     
-    def calculate_individual_path_distances(self, final_path: "list[tuple[int]]") -> "list[float]":
+    def calculate_individual_path_distances(self, final_path: "list[EnvironmentNode]") -> "list[float]":
         costs = []
         for i in range(len(final_path) - 1):
             node1 = final_path[i]
@@ -71,14 +71,14 @@ class AlgorithmComparisonTool:
             costs.append(path_cost)
         return costs
 
-    def calculate_energy_cost_of_path(self, final_path: "list[tuple[int]]") -> float:
+    def calculate_energy_cost_of_path(self, final_path: "list[EnvironmentNode]") -> float:
         path_costs = self.calculate_individual_path_costs(final_path)
         total_cost = 0
         for cost in path_costs:
             total_cost += cost
         return total_cost
     
-    def calculate_individual_path_costs(self, final_path: "list[tuple[int]]") -> "list[float]":
+    def calculate_individual_path_costs(self, final_path: "list[EnvironmentNode]") -> "list[float]":
         costs = []
         for i in range(len(final_path) - 1):
             node1 = final_path[i]
@@ -86,6 +86,31 @@ class AlgorithmComparisonTool:
             path_cost = calculate_energy_cost(node1, node2, self.robot_data)
             costs.append(path_cost)
         return costs
+    
+    def calculate_time_to_traverse(self, final_path):
+        robot_data = self.robot_data
+
+        total_time = 0.0
+        individual_path_distances = self.calculate_individual_path_distances(final_path)
+
+        for dist in individual_path_distances:
+            total_time += calculate_time_to_traverse(dist, robot_data.avg_movespeed, robot_data.avg_movespeed/1.5)
+        return total_time
+
+
+    def get_path_diagnostic_data(self, final_path: "list[tuple[int]]"):
+        total_distance = self.calculate_distance_of_path(final_path)
+        total_energy_cost = self.calculate_energy_cost_of_path(final_path)
+        time_to_traverse = self.calculate_time_to_traverse(final_path)
+
+        output_dict = {
+            "total_distance": total_distance,
+            "total_energy_cost": total_energy_cost,
+            "time_to_traverse": time_to_traverse
+        }
+
+
+        return output_dict
 
 
     # End Path diagnostic data
@@ -199,9 +224,19 @@ class AlgorithmComparisonTool:
                     if not run_success:
                         print(f"Algorithm run failed for reason: {return_msg}")
 
-                    else: 
-                        print("Total energy cost:", self.calculate_energy_cost_of_path(path), "Joules")
-                        print(f"Time taken to run algorithm: {round(end_time - start_time, 2)} seconds.")
+                    else:
+                        path_diagnostic_data = self.get_path_diagnostic_data(path)
+
+                        total_distance = round(path_diagnostic_data['total_distance'], 2)
+                        total_energy_cost = round(path_diagnostic_data['total_energy_cost'], 2)
+                        traversal_time = round(path_diagnostic_data['time_to_traverse'], 2)
+
+                        
+                        
+                        print(f"Total distance traveled: {total_distance} meters")
+                        print(f"Total energy cost: {total_energy_cost} Joules")
+                        print(f"Total time to traverse path: {traversal_time} seconds")
+                        print(f"Time taken to run algorithm: {round(end_time - start_time, 2)} seconds")
                         print()
                         
                         path_coords = [(node.x_coord, node.y_coord, node.elevation) for node in path]
@@ -212,7 +247,7 @@ class AlgorithmComparisonTool:
                 self.plot_paths(paths)
                     
                 input("Press enter to continue: ")
-                        
+
 
 
     def main(self):

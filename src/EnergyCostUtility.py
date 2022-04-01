@@ -24,7 +24,7 @@ def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_
     drivetrain_gear_ratio = robot_data_obj.drivetrain_gear_ratio
     
     velocity = robot_data_obj.avg_movespeed # m/s
-    desired_acceleration = velocity/0.5 # m/s^2 (Assumed half a second to reach full speed)
+    desired_acceleration = velocity/1.5 # m/s^2 (Assumed 1.5 second to reach full speed)
     
     motor_angular_velocity = calculate_wheel_angular_velocity(velocity, wheel_radius) # rad/s
 
@@ -41,14 +41,18 @@ def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_
 
     continuous_power_cost = calculate_combined_power_cost(combined_motor_torque, motor_angular_velocity, motor_efficiency, expected_drivetrain_efficiency) # Watts (Joules/second)
 
-    return continuous_power_cost * calculate_time_to_traverse(travel_distance, velocity) # Joules
+    return continuous_power_cost * calculate_time_to_traverse(travel_distance, velocity, desired_acceleration) # Joules
 
 
 def calculate_wheel_angular_velocity(velocity: float, wheel_radius: float):
     return velocity/wheel_radius
 
-def calculate_time_to_traverse(path_distance, robot_velocity):
-    return path_distance/robot_velocity
+def calculate_time_to_traverse(path_distance, robot_velocity, acceleration):
+    time_accelerating = acceleration/robot_velocity
+    dist_covered_while_accelerating = 0.5 * acceleration * pow(time_accelerating, 2)
+
+    remaining_distance = path_distance - dist_covered_while_accelerating
+    return remaining_distance/robot_velocity + time_accelerating
 
 
 # Force calculations
