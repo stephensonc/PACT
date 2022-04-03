@@ -164,7 +164,6 @@ class EnergyCostAStar(DefaultAStar):
             return 0.0
         else:
 
-
             # num_nodes_to_find = int(len(self.env_grid.nodes)/5)
 
             num_nodes_to_find = self.get_num_nodes_to_find(start_node, dest_node) # between the start and end node
@@ -197,7 +196,7 @@ class EnergyCostAStar(DefaultAStar):
                 # move to the next node of the (num_nodes_to_find) nodes to traverse
                 current_node = heuristic_node
             # print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
-
+            return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
             return heuristic_cost
 
     def get_num_nodes_to_find(self, node1: EnvironmentNode, node2: EnvironmentNode):

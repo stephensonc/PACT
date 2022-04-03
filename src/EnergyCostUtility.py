@@ -39,7 +39,12 @@ def calculate_energy_cost(node1: EnvironmentNode, node2: EnvironmentNode, robot_
     combined_wheel_torque = calculate_wheel_torque(roll_friction, incline_friction, acceleration_friction, wheel_radius)
     combined_motor_torque = caclulate_combined_motor_torque(combined_wheel_torque, expected_drivetrain_efficiency, drivetrain_gear_ratio)
 
-    continuous_power_cost = calculate_combined_power_cost(combined_motor_torque, motor_angular_velocity, motor_efficiency, expected_drivetrain_efficiency) # Watts (Joules/second)
+    continuous_power_cost = calculate_combined_power_cost(combined_wheel_torque, motor_angular_velocity, motor_efficiency, expected_drivetrain_efficiency) # Watts (Joules/second)
+    # continuous_power_cost = calculate_continuous_power_cost(
+    #     calculate_roll_torque(roll_friction, wheel_radius),
+    #     calculate_incline_torque(incline_friction, wheel_radius),
+    #     motor_angular_velocity, motor_efficiency, expected_drivetrain_efficiency
+    #     )
 
     return continuous_power_cost * calculate_time_to_traverse(travel_distance, velocity, desired_acceleration) # Joules
 
@@ -107,3 +112,4 @@ def caclulate_combined_motor_torque(wheel_torque: float, drivetrain_efficiency: 
 
 def calculate_combined_power_cost(combined_torque, angular_velocity: float, motor_efficiency: float, drivetrain_efficiency: float):
     return combined_torque * (angular_velocity * (1.0/drivetrain_efficiency) * (1.0/motor_efficiency))
+
