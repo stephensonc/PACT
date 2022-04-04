@@ -73,8 +73,8 @@ class NavMenu:
         start_coord_string = input("Please enter the start coordinates, separated by a comma: ")
         end_coord_string = input("Please enter the end coordinates, separated by a comma: ")
 
-        print(start_coord_string)
-        print(end_coord_string)
+        # print(start_coord_string)
+        # print(end_coord_string)
 
         start_coord_tuple = tuple([int(x) for x in start_coord_string.split(",")])
         end_coord_tuple = tuple([int(x) for x in end_coord_string.split(",")])

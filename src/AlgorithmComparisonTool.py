@@ -219,7 +219,7 @@ class AlgorithmComparisonTool:
             if choice == "Create Environment":
                 graph_width = menu.env_dimensions[0]
                 graph_height = menu.env_dimensions[1]
-                self.env_graph = self.auto_create_uniform_graph(graph_width, graph_height)
+                self.env_graph = self.auto_create_graph(graph_width, graph_height)
 
 
             if choice == "Import Environment from File":

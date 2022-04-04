@@ -72,10 +72,10 @@ class DefaultAStar(Algorithm):
             if curr_node.cost_to_end < best_node.cost_to_end:
                 best_node_indices = [i]
             elif curr_node.cost_to_end == best_node.cost_to_end:
-                print("Found a tie")
+                # print("Found a tie")
                 best_node_indices.append(i)
         if(len(best_node_indices) > 1):
-            print(f"Best_node_indices length: {len(best_node_indices)}")
+            # print(f"Best_node_indices length: {len(best_node_indices)}")
             # if there were ties on energy cost
             best_euclidean_dist = dist(open_list[0].coord_tuple, end_node.coord_tuple)
             for idx in best_node_indices:
@@ -204,9 +204,12 @@ class EnergyCostAStar(DefaultAStar):
                 # Update the node being used for the heuristic
                 heuristic_node = self.env_grid.nodes[x_coord][y_coord]
                 energy_cost = calculate_energy_cost(current_node, heuristic_node, self.robot_data_obj)
+                
                 # Add the cost between these two nodes to the list
                 heuristic_cost += energy_cost
+                
                 #print(f"Heuristic cost for heuristic node at ({heuristic_node.x_coord}, {heuristic_node.y_coord}): {heuristic_cost}")
+                
                 # move to the next node of the (num_nodes_to_find) nodes to traverse
                 current_node = heuristic_node
             # print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
