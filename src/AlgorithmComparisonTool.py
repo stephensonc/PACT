@@ -23,7 +23,7 @@ class AlgorithmComparisonTool:
         self.set_robot_data()
         self.env_graph = None
 
-    def set_robot_data(self, robot_data_filepath: str = "robot_data/robot_example.yml"):
+    def set_robot_data(self, robot_data_filepath: str = "robot_data/robot_example_2.yml"):
         try:
             self.robot_data = RobotData(robot_data_filepath)
         except Exception as exc:
@@ -122,14 +122,16 @@ class AlgorithmComparisonTool:
         for i in range(width):
             row = []
             for j in range(height):
-                row.append(float(random.randint(0, 10)))
+                row.append(float(random.randint(1, 6)))
             elevations.append(row)
 
         friction_coefficients = []
         for i in range(width):
             row = []
             for j in range(height):
-                row.append(float(random.randint(7, 20))/10)
+                coeff = float(random.randint(1, 12))/10
+                row.append(coeff)
+                # print(coeff)
             friction_coefficients.append(row)
 
         return self.create_graph(width, height, elevations, friction_coefficients)

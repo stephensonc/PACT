@@ -1,0 +1,10 @@
+weight_in_kg: 70.0 # Kilograms
+number_of_wheels: 4 # No unit
+wheel_roll_friction_coefficient: 0.1 # No unit, between 0 and 1
+wheel_radius_meters: 0.2 # Meters
+individual_wheel_voltage: 150 # Volts, voltage of the motor given by manufacturer
+individual_wheel_power_efficiency: 0.85 # Ratio, will default to 1 if not present
+drivetrain_gear_ratio: 1 # no unit, higher means increased torque, lower speed
+average_movespeed_m/s: 14.3 # Meters per second
+max_movespeed_m/s: 15.0 # Meters per Second
+max_passable_slope: 55.0 # Degrees

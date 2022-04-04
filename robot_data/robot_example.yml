@@ -1,6 +1,6 @@
 weight_in_kg: 30.5 # Kilograms
 number_of_wheels: 4 # No unit
-wheel_roll_friction_coefficient: 0.2 # No unit, between 0 and 1
+wheel_roll_friction_coefficient: 0.1 # No unit, between 0 and 1
 wheel_radius_meters: 0.2 # Meters
 individual_wheel_voltage: 150 # Volts, voltage of the motor given by manufacturer
 individual_wheel_power_efficiency: 0.75 # Ratio, will default to 1 if not present

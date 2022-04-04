@@ -86,7 +86,7 @@ class DefaultAStar(Algorithm):
             # return open_list, closed_list, current_node, output_path
 
         open_list = self.pop_node_from_list(open_list, current_node)
-        closed_list.append(current_node) # TODO: Verify that current_node is an AStarEnvironmentNode
+        closed_list.append(current_node)
         
 
         for adjacent_node_edge in current_node.adjacent_edges:
@@ -196,7 +196,7 @@ class EnergyCostAStar(DefaultAStar):
                 # move to the next node of the (num_nodes_to_find) nodes to traverse
                 current_node = heuristic_node
             # print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
-            return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
+            # return calculate_energy_cost(start_node, dest_node, self.robot_data_obj)
             return heuristic_cost
 
     def get_num_nodes_to_find(self, node1: EnvironmentNode, node2: EnvironmentNode):
