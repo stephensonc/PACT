@@ -1,3 +1,4 @@
+from math import ceil, dist
 from RobotData import RobotData
 from EnvironmentData import EnvironmentGraph, EnvironmentNode, distance_between_nodes, distance_between_nodes_no_elevation
 from EnergyCostUtility import calculate_energy_cost
@@ -62,11 +63,26 @@ class DefaultAStar(Algorithm):
         return output_path
 
     def start_pathing(self, open_list: "list[AStarEnvironmentNode]", closed_list: "list[AStarEnvironmentNode]", current_node: AStarEnvironmentNode, end_node: AStarEnvironmentNode):
-            
+        best_node_indices = [0]
         best_node_index = 0
         for i in range(len(open_list)):
-            if open_list[i].cost_to_end < open_list[best_node_index].cost_to_end:
-                best_node_index = i
+            # tie-breaking
+            curr_node = open_list[i]
+            best_node = open_list[best_node_indices[0]]
+            if curr_node.cost_to_end < best_node.cost_to_end:
+                best_node_indices = [i]
+            elif curr_node.cost_to_end == best_node.cost_to_end:
+                print("Found a tie")
+                best_node_indices.append(i)
+        if(len(best_node_indices) > 1):
+            print(f"Best_node_indices length: {len(best_node_indices)}")
+            # if there were ties on energy cost
+            best_euclidean_dist = dist(open_list[0].coord_tuple, end_node.coord_tuple)
+            for idx in best_node_indices:
+                curr_dist = dist(open_list[idx].coord_tuple, end_node.coord_tuple)
+                if(curr_dist < best_euclidean_dist):
+                    best_euclidean_dist = curr_dist
+                    best_node_index = idx
 
         current_node = open_list[best_node_index]
         
@@ -168,22 +184,20 @@ class EnergyCostAStar(DefaultAStar):
 
             num_nodes_to_find = self.get_num_nodes_to_find(start_node, dest_node) # between the start and end node
 
-            x_increment = int((dest_node.x_coord - start_node.x_coord) / num_nodes_to_find)
-            y_increment = int((dest_node.y_coord - start_node.y_coord) / num_nodes_to_find)
+            x_increment = ceil((dest_node.x_coord - start_node.x_coord) / num_nodes_to_find)
+            y_increment = ceil((dest_node.y_coord - start_node.y_coord) / num_nodes_to_find)
+
+            # print(f"Node being checked: ({start_node.x_coord}, {start_node.y_coord})")
+            # print(f"X increment: {x_increment} Y increment: {y_increment}")
+            # print(f"Num nodes to find between currnode and {dest_node.x_coord}, {dest_node.y_coord}: {num_nodes_to_find}")
 
             current_node = start_node
             # print(f"Current node x,y: ({current_node.x_coord},{current_node.y_coord})")
 
             for i in range(1, num_nodes_to_find + 1):
                 # Get coordinates of a node (1/num_nodes_to_find) of the way to the final path node
-                x_coord = current_node.x_coord + x_increment
-                y_coord = current_node.y_coord + y_increment
-
-                if x_coord == current_node.x_coord:
-                    x_coord = dest_node.x_coord
-                if y_coord == current_node.x_coord:
-                    y_coord == dest_node.x_coord
-                
+                x_coord = min(current_node.x_coord + x_increment, dest_node.x_coord)
+                y_coord = min(current_node.y_coord + y_increment, dest_node.y_coord)
                 
                 # print(f"\tHeuristic node x,y: ({x_coord},{y_coord})")
 
@@ -192,7 +206,7 @@ class EnergyCostAStar(DefaultAStar):
                 energy_cost = calculate_energy_cost(current_node, heuristic_node, self.robot_data_obj)
                 # Add the cost between these two nodes to the list
                 heuristic_cost += energy_cost
-                
+                #print(f"Heuristic cost for heuristic node at ({heuristic_node.x_coord}, {heuristic_node.y_coord}): {heuristic_cost}")
                 # move to the next node of the (num_nodes_to_find) nodes to traverse
                 current_node = heuristic_node
             # print(f"Heuristic value for node ({start_node.x_coord}, {start_node.y_coord}): {energy_cost}")
@@ -200,5 +214,5 @@ class EnergyCostAStar(DefaultAStar):
             return heuristic_cost
 
     def get_num_nodes_to_find(self, node1: EnvironmentNode, node2: EnvironmentNode):
-        num_nodes = int(distance_between_nodes_no_elevation(node1, node2)/2)
+        num_nodes = ceil(distance_between_nodes_no_elevation(node1, node2))
         return num_nodes if num_nodes > 0 else 1

@@ -117,6 +117,25 @@ class AlgorithmComparisonTool:
 
 
 
+    def auto_create_uniform_graph(self, width, height) -> EnvironmentGraph:
+        elevations = []
+        for i in range(width):
+            row = []
+            for j in range(height):
+                row.append(1.0)
+            elevations.append(row)
+
+        friction_coefficients = []
+        for i in range(width):
+            row = []
+            for j in range(height):
+                coeff = 1.0
+                row.append(coeff)
+                # print(coeff)
+            friction_coefficients.append(row)
+
+        return self.create_graph(width, height, elevations, friction_coefficients)
+
     def auto_create_graph(self, width, height) -> EnvironmentGraph:
         elevations = []
         for i in range(width):
@@ -184,6 +203,8 @@ class AlgorithmComparisonTool:
 
 
     def run_tool(self):
+
+
         supported_alg_names = self.supported_algorithms.keys()
         
         menu = NavMenu(supported_alg_names)
@@ -198,7 +219,7 @@ class AlgorithmComparisonTool:
             if choice == "Create Environment":
                 graph_width = menu.env_dimensions[0]
                 graph_height = menu.env_dimensions[1]
-                self.env_graph = self.auto_create_graph(graph_width, graph_height)
+                self.env_graph = self.auto_create_uniform_graph(graph_width, graph_height)
 
 
             if choice == "Import Environment from File":
