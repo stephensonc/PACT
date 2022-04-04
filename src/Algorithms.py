@@ -47,6 +47,9 @@ class DefaultAStar(Algorithm):
         current_node = None
         output_path = []
 
+        # Ensure that grid nodes do not have residual run data from previous execution
+        
+
         # Ensure that grid nodes have adjacency info
         env_grid.update_adjacent_nodes()
 

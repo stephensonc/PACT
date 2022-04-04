@@ -104,8 +104,8 @@ class NavMenu:
 
         print("Environment files found: ", end="")
         for file in os.listdir(env_data_path):
-            print(file, end="")
-        print()
+            print(file)
+        print("\n")
         filename = input("Please enter the filename for the environment: ")
 
         file_path = env_data_path + path_divider + filename
