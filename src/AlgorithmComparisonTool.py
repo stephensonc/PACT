@@ -214,14 +214,15 @@ class AlgorithmComparisonTool:
             menu.reset_menu()
             choice = input("Please choose a menu option by typing in its label: ")
             option_output = menu.select_option(choice)
+            int_choice, is_int = try_parse_int(choice)
 
+            if is_int and int_choice in menu._menu_relationship_map.keys():
+                choice = menu._menu_relationship_map[int_choice]
 
             if choice == "Create Environment":
                 graph_width = menu.env_dimensions[0]
                 graph_height = menu.env_dimensions[1]
                 self.env_graph = self.auto_create_graph(graph_width, graph_height)
-
-
             if choice == "Import Environment from File":
                 self.env_graph = self.create_graph(menu.env_dimensions[0], menu.env_dimensions[1], menu.env_elevations, menu.env_fric_coeffs)
 
@@ -324,6 +325,12 @@ class AlgorithmComparisonTool:
         #     print(path_cost)
 
         print("Total energy cost:", self.calculate_energy_cost_of_path(path))
+
+def try_parse_int(value):
+    try:
+        return int(value), True
+    except ValueError:
+        return value, False
 
 if __name__ == "__main__":
     tool_obj = AlgorithmComparisonTool()

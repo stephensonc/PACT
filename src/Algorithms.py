@@ -207,5 +207,5 @@ class EnergyCostAStar(DefaultAStar):
             return heuristic_cost
 
     def get_num_nodes_to_find(self, node1: EnvironmentNode, node2: EnvironmentNode):
-        num_nodes = ceil(distance_between_nodes_no_elevation(node1, node2))
+        num_nodes = ceil(distance_between_nodes_no_elevation(node1, node2)/2)
         return num_nodes if num_nodes > 0 else 1

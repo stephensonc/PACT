@@ -97,3 +97,5 @@ def test_energy_get_h_value():
     expected_h_value = calculate_energy_cost(env.nodes[0][0], env.nodes[1][1], alg.robot_data_obj)
     assert alg.get_h_value(env.nodes[0][0], env.nodes[1][1]) == expected_h_value
     
+def test_get_num_nodes_to_find():
+    
