@@ -4,6 +4,7 @@ import time
 import random
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
 from EnergyCostUtility import calculate_energy_cost, calculate_time_to_traverse
 from NavMenu import NavMenu
@@ -176,13 +177,42 @@ class AlgorithmComparisonTool:
         figure = plt.figure()
         axes = plt.axes(projection='3d')
         axes.set_title("Map: Paths taken to objective")
+
+        
+
         for alg_name in paths.keys():
             x_coords = np.array([coord_tuple[0] for coord_tuple in paths[alg_name]])
             y_coords = np.array([coord_tuple[1] for coord_tuple in paths[alg_name]])
             z_coords = np.array([coord_tuple[2] for coord_tuple in paths[alg_name]])
             # plt.plot(x_coords, y_coords, z_coords, label=alg_name)
-            axes.plot3D(x_coords, y_coords, z_coords, label=alg_name)
-    
+            axes.plot3D(x_coords, y_coords, z_coords, zorder=10, label=alg_name, linewidth=5)
+
+        # x_values = np.linspace(0, len(self.env_graph.nodes), len(self.env_graph.nodes))
+        # y_values = np.linspace(0, len(self.env_graph.nodes[0]), len(self.env_graph.nodes[0]))
+
+
+        start_coords = paths[list(paths.keys())[0]][0]
+        end_coords = paths[list(paths.keys())[0]][-1]
+        x_values = np.linspace(start_coords[0], end_coords[0], abs(end_coords[0] - start_coords[0]) + 1)
+        y_values = np.linspace(start_coords[1], end_coords[1], abs(end_coords[1] - start_coords[1]) + 1)
+        
+        node_elevations = []
+        for x in range(start_coords[0], end_coords[0] + 1):
+            node_coords = []
+            for y in range(start_coords[1], end_coords[1] + 1):
+                node = self.env_graph.nodes[x][y]
+                node_coords.append(node.elevation)
+            node_elevations.append(node_coords)
+        
+        X, Y = np.meshgrid(x_values, y_values)
+        Z = np.array(node_elevations)
+
+        surface = axes.plot_surface(X, Y, Z, zorder=0,cmap=cm.get_cmap('Greys'), linewidth=0, label="surface")
+        # surface = axes.plot_wireframe(X, Y, Z, color="green", linewidth=1, label="surface")
+
+        surface._facecolors2d=surface._facecolor3d
+        surface._edgecolors2d=surface._edgecolor3d
+        # figure.colorbar(surface, shrink=0.5, aspect=5)
 
         axes.set_xlabel("X coordinate (meters)")
         axes.set_ylabel("Y coordinate (meters)")

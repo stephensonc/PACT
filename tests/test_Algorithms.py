@@ -79,23 +79,30 @@ def test_start_pathing():
     assert current_node is not None
     assert len(closed_list) == 1
 
+
+def test_get_num_nodes_to_find():
+    node1 = EnergyCostAStar.EnergyCostAStarEnvironmentNode(EnvironmentNode(0,0,1.0))
+    node2 = EnergyCostAStar.EnergyCostAStarEnvironmentNode(EnvironmentNode(50,50,1.0))
+    alg = EnergyCostAStar(RobotData("robot_data/robot_example.yml"))
+    assert alg.get_num_nodes_to_find(node1, node2) == 8
+
 def test_energy_get_h_value():
     env = EnvironmentGraph(2, 2)
     nodes = [
         [
             EnvironmentNode(0,0, 1.0, 1),
-            EnvironmentNode(0,0, 1.0, 1)
+            EnvironmentNode(1,0, 1.0, 1)
         ],
         [
-            EnvironmentNode(0,0, 1.0, 1),
-            EnvironmentNode(0,0, 1.0, 1)
+            EnvironmentNode(0,1, 1.0, 1),
+            EnvironmentNode(1,1, 1.0, 1)
         ]
     ]
     alg = EnergyCostAStar(RobotData("robot_data/robot_example.yml"))
     env.nodes = nodes
 
+    alg.env_grid = env
+
     expected_h_value = calculate_energy_cost(env.nodes[0][0], env.nodes[1][1], alg.robot_data_obj)
     assert alg.get_h_value(env.nodes[0][0], env.nodes[1][1]) == expected_h_value
-    
-def test_get_num_nodes_to_find():
     
