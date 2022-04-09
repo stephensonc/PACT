@@ -20,6 +20,13 @@ class NavMenu:
             "Run Selected Algorithms" : self.run_algorithms, # Currently handled by AlgorithmComparisonTool
             "Exit" : exit
         }
+
+        self._menu_relationship_map = {}
+        item_idx = 1
+        for menu_item in self.menu_options.keys():
+            self._menu_relationship_map.update({item_idx: menu_item})
+            item_idx += 1
+
         self.algorithms_to_run = ["A*", "Energy Cost A*"]
 
     def clear_menu(self):
@@ -46,17 +53,17 @@ class NavMenu:
             item_idx += 1
 
     def select_option(self, choice: str):
-        if choice.lower() == "exit":
-            exit()
+        # if choice.lower() == "exit" or (int(choice) in self._menu_relationship_map.keys() and self._menu_relationship_map[int(choice)] == "Exit"):
+        #     exit()
         if self.selection_is_valid_option(choice):
-            return self.menu_options[choice]()
+            return self.menu_options[choice]() if int(choice) not in self._menu_relationship_map.keys() else self.menu_options[self._menu_relationship_map[int(choice)]]()
         else:
             self.reset_menu()
             return self.select_option(input(f"{choice} is not a valid option, please enter another: "))
 
     
     def selection_is_valid_option(self, choice: str):
-        return choice in self.menu_options.keys()
+        return choice in self.menu_options.keys() or int(choice) in self._menu_relationship_map.keys()
     
     # Add algorithm to the comparison
 
