@@ -190,7 +190,7 @@ class EnergyCostAStar(DefaultAStar):
 
 
             current_node = start_node
-            for i in range(1, num_nodes_to_find + 1):
+            for i in range(0, num_nodes_to_find + 1):
                 # Get coordinates of a node (1/num_nodes_to_find) of the way to the final path node
                 x_coord = min(current_node.x_coord + x_increment, dest_node.x_coord)
                 y_coord = min(current_node.y_coord + y_increment, dest_node.y_coord)

@@ -1,5 +1,7 @@
-from Algorithms import DefaultAStar
+from Algorithms import DefaultAStar, EnergyCostAStar
+from EnergyCostUtility import calculate_energy_cost
 from EnvironmentData import EnvironmentGraph, EnvironmentNode
+from RobotData import RobotData
 
 
 def test_pop_node():
@@ -77,5 +79,21 @@ def test_start_pathing():
     assert current_node is not None
     assert len(closed_list) == 1
 
+def test_energy_get_h_value():
+    env = EnvironmentGraph(2, 2)
+    nodes = [
+        [
+            EnvironmentNode(0,0, 1.0, 1),
+            EnvironmentNode(0,0, 1.0, 1)
+        ],
+        [
+            EnvironmentNode(0,0, 1.0, 1),
+            EnvironmentNode(0,0, 1.0, 1)
+        ]
+    ]
+    alg = EnergyCostAStar(RobotData("robot_data/robot_example.yml"))
+    env.nodes = nodes
 
+    expected_h_value = calculate_energy_cost(env.nodes[0][0], env.nodes[1][1], alg.robot_data_obj)
+    assert alg.get_h_value(env.nodes[0][0], env.nodes[1][1]) == expected_h_value
     

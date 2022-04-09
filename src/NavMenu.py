@@ -55,16 +55,24 @@ class NavMenu:
     def select_option(self, choice: str):
         # if choice.lower() == "exit" or (int(choice) in self._menu_relationship_map.keys() and self._menu_relationship_map[int(choice)] == "Exit"):
         #     exit()
+        choice, is_int = try_parse_int(choice)
         if self.selection_is_valid_option(choice):
-            return self.menu_options[choice]() if int(choice) not in self._menu_relationship_map.keys() else self.menu_options[self._menu_relationship_map[int(choice)]]()
+            if is_int:
+                return self.menu_options[self._menu_relationship_map[int(choice)]]()
+            else:
+                return self.menu_options[choice]()
         else:
             self.reset_menu()
             return self.select_option(input(f"{choice} is not a valid option, please enter another: "))
 
     
     def selection_is_valid_option(self, choice: str):
-        return choice in self.menu_options.keys() or int(choice) in self._menu_relationship_map.keys()
-    
+        choice, is_int = try_parse_int(choice)
+        if is_int:
+            return choice in self._menu_relationship_map.keys()
+        else:
+            return choice in self.menu_options.keys()
+
     # Add algorithm to the comparison
 
     def add_algorithm_selected(self):
@@ -133,11 +141,12 @@ class NavMenu:
 
     def prompt_for_output_filename(self):
         return input("Please enter a filename for the environment file: ")
-
-
-
-
+    
     def run_algorithms(self):
         return
 
-    
+def try_parse_int(value):
+    try:
+        return int(value), True
+    except ValueError:
+        return value, False
