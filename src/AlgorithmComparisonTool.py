@@ -138,23 +138,36 @@ class AlgorithmComparisonTool:
         return self.create_graph(width, height, elevations, friction_coefficients)
 
     def auto_create_graph(self, width, height) -> EnvironmentGraph:
+
+        env_graph = self.auto_create_uniform_graph(width,height)
+
         elevations = []
         for i in range(width):
             row = []
             for j in range(height):
                 row.append(float(random.randint(1, 6)))
             elevations.append(row)
+        
+        centerpoint_x = random.randint(0, width - 1)
+        centerpoint_y = random.randint(0, height - 1)
 
-        friction_coefficients = []
-        for i in range(width):
-            row = []
-            for j in range(height):
-                coeff = float(random.randint(1, 12))/10
-                row.append(coeff)
-                # print(coeff)
-            friction_coefficients.append(row)
+        env_graph.nodes[centerpoint_x][centerpoint_y].elevation = float(random.randint(10, 50))/10.0
+        
+        last_elevation = env_graph.nodes[centerpoint_x][centerpoint_y].elevation
+        for row in env_graph.nodes:
+            for node in row:
+                elevation_modifier = float(np.random.normal(0.0, scale=0.1))
+                node.elevation = last_elevation + elevation_modifier
+                last_elevation = node.elevation
 
-        return self.create_graph(width, height, elevations, friction_coefficients)
+
+        # x_values = np.random.normal(float(centerpoint_x), scale=2.0, size=width)
+        # print(x_values)
+        # y_values = np.random.normal(float(centerpoint_x), scale=2.0, size=height)
+        # elevations = np.array((x_values,y_values)).tolist()
+        # elevations = np.random.normal(3.0, scale=0.1, size=(width, height)).tolist()
+
+        return env_graph
 
 
     # Fills elevations and friction by columns first
